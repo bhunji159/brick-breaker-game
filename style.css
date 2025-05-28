@@ -1,0 +1,92 @@
+/* style.css */
+
+body {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	font-family: "Arial", sans-serif;
+	background-color: #000;
+	color: white;
+}
+
+/* 캔버스 초기에는 스타일 없음 (JS에서 동적으로 추가) */
+canvas#gameCanvas {
+	display: block;
+	margin: 0 auto;
+}
+
+/* 공통 메뉴 스타일 */
+.menu {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.85);
+	padding: 30px;
+	border-radius: 12px;
+	box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+	z-index: 10;
+}
+
+.menu h1,
+.menu h2 {
+	margin-bottom: 20px;
+}
+
+.menu p {
+	margin-bottom: 20px;
+	line-height: 1.5;
+}
+
+/* 버튼 스타일 */
+button {
+	padding: 10px 20px;
+	margin: 10px;
+	font-size: 16px;
+	font-weight: bold;
+	border: none;
+	border-radius: 8px;
+	background-color: #3b82f6;
+	color: white;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+button:hover {
+	background-color: #2563eb;
+}
+
+/* 메인 메뉴 버튼 세로 정렬 및 크기 통일 */
+.menu button {
+	display: block;
+	width: 200px;
+	height: 50px;
+	margin: 10px auto;
+}
+
+/* 숨김 클래스 - 완전 제거용 */
+.hidden {
+	display: none !important;
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+	position: absolute;
+	z-index: -9999;
+}
+
+/* HUD 스타일 */
+#hud {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	background-color: rgba(20, 20, 20, 0.7);
+	padding: 10px 15px;
+	border-radius: 8px;
+	font-size: 16px;
+	z-index: 5;
+}
+
+#hud div {
+	margin-bottom: 5px;
+}
