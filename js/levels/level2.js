@@ -5,7 +5,7 @@ function startLevel2() {
 	if (typeof window.score !== "number") {
 		window.score = 0;
 	}
-	window.remainingTime = 60;
+	window.remainingTime = 90;
 	window.animationId = null;
 	window.timerId = null;
 	window.isPaused = false;
@@ -35,7 +35,7 @@ function startLevel2() {
 		x: canvas.width / 2,
 		y: canvas.height / 2,
 		radius: 10,
-		speed: 4,
+		speed: 3,
 		dx: 4,
 		dy: -4,
 	};

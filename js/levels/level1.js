@@ -1,4 +1,9 @@
 function startLevel1() {
+	const bgImage = new Image();
+	bgImage.src = "assets/images/background/gi0.png"; // 배경 이미지 파일명
+	const brickImage = new Image();
+	brickImage.src = "assets/images/brick/br0.png"; // 벽돌 이미지 파일명
+
 	const ctx = canvas.getContext("2d");
 	window.isGameOver = false;
 
@@ -6,7 +11,7 @@ function startLevel1() {
 		window.score = 0;
 	}
 	console.log(window.score);
-	window.remainingTime = 60;
+	window.remainingTime =120;
 	window.animationId = null;
 	window.timerId = null;
 	window.isPaused = false;
@@ -15,7 +20,7 @@ function startLevel1() {
 	const particles = [];
 
 	const hitSound = new Audio("assets/sounds/hit_block.mp3");
-	hitSound.volume = 0.5;
+	hitSound.volume = 0.3;
 
 	const bgm = new Audio("assets/sounds/bgm.mp3");
 	bgm.loop = true;
@@ -28,7 +33,7 @@ function startLevel1() {
 	const paddle = {
 		x: canvas.width / 2 - 50,
 		y: canvas.height - 30,
-		width: 100,
+		width: 150,
 		height: 15,
 		speed: 7,
 	};
@@ -37,15 +42,15 @@ function startLevel1() {
 		x: canvas.width / 2,
 		y: canvas.height / 2,
 		radius: 10,
-		speed: 4,
-		dx: 4,
-		dy: -4,
+		speed: 2,
+		dx: 2,
+		dy: -2,
 	};
 
-	const brickRowCount = 3;
-	const brickColumnCount = 6;
+	const brickRowCount = 4;
+	const brickColumnCount = 10;
 	const brickWidth = 100;
-	const brickHeight = 20;
+	const brickHeight = 50;
 	const brickPadding = 10;
 	const brickOffsetTop = 50;
 	const brickOffsetLeft = 60;
@@ -95,6 +100,9 @@ function startLevel1() {
 	};
 
 	window.showResultModal = function (success, finalScore, currentLevel) {
+
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		
 		const modal = document.getElementById("result-modal");
 		const title = document.getElementById("result-title");
 		const scoreValue = document.getElementById("score-value");
@@ -137,12 +145,15 @@ function startLevel1() {
 	}
 
 	function drawBricks() {
-		bricks.forEach((brick) => {
-			if (brick.visible) {
-				ctx.fillStyle = brick.color;
-				ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
-			}
-		});
+	  bricks.forEach((brick) => {
+	    if (brick.visible) {
+	      // 이미지를 벽돌 위치에 그림
+	      ctx.drawImage(brickImage, brick.x, brick.y, brick.width, brick.height);
+	      // 필요하다면, 아래 fillRect는 주석 처리 또는 삭제
+	      // ctx.fillStyle = brick.color;
+	      // ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+	    }
+	  });
 	}
 
 	function drawScore() {
@@ -187,7 +198,7 @@ function startLevel1() {
 	}
 
 	function clear() {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
+ 		ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
 	}
 
 	function update() {
@@ -204,6 +215,8 @@ function startLevel1() {
 		}
 
 		if (ball.y > canvas.height - ball.radius) {
+			isFading = true;
+			ctx.clearRect(0,0,canvas.width,canvas.height);
 			cancelAnimationFrame(animationId);
 			clearInterval(timerId);
 			bgm.pause();
@@ -242,7 +255,7 @@ function startLevel1() {
 		});
 
 		window.checkLevelClear();
-		if (window.isGameOver) return;
+		if (window.isGameOver)return;
 		updateParticles();
 
 		drawPaddle();

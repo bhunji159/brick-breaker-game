@@ -5,7 +5,7 @@ function startLevel3() {
 		window.score = 0;
 	}
 
-	window.remainingTime = 60;
+	window.remainingTime = 90;
 	window.animationId = null;
 	window.timerId = null;
 	window.isGameOver = false;
@@ -37,7 +37,7 @@ function startLevel3() {
 		x: canvas.width / 2,
 		y: canvas.height / 2,
 		radius: 10,
-		speed: 4,
+		speed: 3,
 		dx: 4,
 		dy: -4,
 	};
