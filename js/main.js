@@ -15,7 +15,10 @@ const settingsButton = document.getElementById("settings-button");
 // const stageButton = document.getElementById("stage-button");
 // const exitButton = document.getElementById("exit-button");
 
-const backButtonImage = document.getElementById("back-button-image");
+// 뒤로가기 
+const senarioBackArrow = document.getElementById("senario-back-arrow");
+const stageBackArrow = document.getElementById("stage-back-arrow");
+const settingBackArrow = document.getElementById("settings-back-arrow");
 
 // 캔버스를 표시하고 스타일 적용
 function activateGameCanvas() {
@@ -54,8 +57,18 @@ document.addEventListener("DOMContentLoaded", function () {
 	// 	alert("게임을 종료하려면 브라우저를 닫으세요.");
 	// });
 
-	backButtonImage.addEventListener("click", function () {
+	senarioBackArrow.addEventListener("click", function () {
 		storyMenu.classList.add("hidden");
+		mainMenu.classList.remove("hidden");
+	});
+
+	stageBackArrow.addEventListener("click", function () {
+		stageMenu.classList.add("hidden");
+		mainMenu.classList.remove("hidden");
+	});
+
+	settingBackArrow.addEventListener("click", function () {
+		settingsMenu.classList.add("hidden");
 		mainMenu.classList.remove("hidden");
 	});
 

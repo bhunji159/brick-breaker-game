@@ -53,6 +53,10 @@ button {
 	transition: background-color 0.2s;
 }
 
+#stage-menu .stage-select:last-child {
+    padding: 10px;
+}
+
 button:hover {
 	background-color: #2563eb;
 }
@@ -92,12 +96,16 @@ button:hover {
 }
 
 
-/* 시나리오 화면 */
-.story-header-row {
+
+.header-row {
     position: relative;
     width: 100%;
     text-align: center;   
     height: 48px;         
+}
+
+#stage-menu .header-row {
+	width: 300px;
 }
 
 .back-arrow {
@@ -110,7 +118,7 @@ button:hover {
     cursor: pointer;
 }
 
-.story-header-row h2 {
+.header-row h2 {
     margin: 0;
     line-height: 48px;   
     font-size: 1.6rem;

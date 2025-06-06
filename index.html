@@ -20,30 +20,10 @@
 				<button id="settings-button">환경 설정</button>
 			</div>
 
-			<!-- 설정 메뉴 -->
-			<div id="settings-menu" class="menu hidden">
-				<h2>설정</h2>
-				<label
-					>배경 음악:
-					<input type="checkbox" id="music-toggle" checked />
-				</label>
-			</div>
-
-			<!-- 스테이지 선택 메뉴 -->
-			<div id="stage-menu" class="menu hidden">
-				<h2>스테이지 선택</h2>
-				<button class="stage-select" data-stage="1">스테이지 1 - 지각</button>
-				<button class="stage-select" data-stage="2">스테이지 2 - 멘틀</button>
-				<button class="stage-select" data-stage="3">스테이지 3 - 외핵</button>
-				<button class="stage-select" data-stage="4">
-					스테이지 4 - 내핵 (보스)
-				</button>
-			</div>
-
 			<!-- 시나리오 설명 -->
 			<div id="story-menu" class="menu hidden">
-				<div class="story-header-row">
-					<img id="back-button-image" class="back-arrow" 
+				<div class="header-row">
+					<img id="senario-back-arrow" class="back-arrow" 
 					src="assets/images/arrow_back.png" alt="뒤로가기" />
 					<h2>📖 시나리오</h2>
 				</div>
@@ -52,6 +32,54 @@
 					외핵을 지나 내핵까지 진입하라! 그곳에서 지구를 위협하는 괴 생명체를
 					저지하고 지구를 구하자!
 				</p>
+			</div>
+
+			<!-- 게임 시작 -> 스테이지 선택 메뉴 -->
+			<div id="stage-menu" class="menu hidden">
+				<div class="header-row">
+					<img id="stage-back-arrow" class="back-arrow" 
+					src="assets/images/arrow_back.png" alt="뒤로가기" />
+					<h2>스테이지 선택</h2>
+				</div>
+				<button class="stage-select" data-stage="1">스테이지 1 - 지각</button>
+				<button class="stage-select" data-stage="2">스테이지 2 - 멘틀</button>
+				<button class="stage-select" data-stage="3">스테이지 3 - 외핵</button>
+				<button class="stage-select" data-stage="4">
+					스테이지 4 - 내핵 (보스)
+				</button>
+			</div>
+
+			<!-- 환경 설정 메뉴 -->
+			<div id="settings-menu" class="menu hidden">
+				<div class="header-row">
+					<img id="settings-back-arrow" class="back-arrow" 
+					src="assets/images/arrow_back.png" alt="뒤로가기" />
+					<h2>환경 설정</h2>
+				</div>
+				<div class="settings-group">
+					<label for="background-select">배경 이미지:</label>
+					<select id="background-select">
+						<option value="space">우주</option>
+						<option value="blue">파란색</option>
+						<option value="gradient">그라데이션</option>
+					</select>
+					<!-- 썸네일 미리보기 이미지(선택) -->
+					<img id="bg-preview" src="assets/images/bg_space.jpg" alt="미리보기" style="width:64px; height:40px; margin-left:12px;">
+				</div>
+				<div class="settings-group">
+					<label for="music-select">배경 음악:</label>
+					<select id="music-select">
+						<option value="on">ON</option>
+						<option value="off">OFF</option>
+					</select>
+				</div>
+				<div class="settings-group">
+					<label>공:</label>
+					<label><input type="radio" name="ball" value="basic" checked> 기본</label>
+					<label><input type="radio" name="ball" value="star"> 별</label>
+					<label><input type="radio" name="ball" value="fire"> 파이어볼</label>
+					<!-- 썸네일 아이콘 추가 가능 -->
+				</div>
 			</div>
 
 			<!-- 게임 결과 모달 -->
