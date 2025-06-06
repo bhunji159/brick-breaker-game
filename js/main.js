@@ -8,11 +8,12 @@ const stageMenu = document.getElementById("stage-menu");
 const settingsMenu = document.getElementById("settings-menu");
 const storyMenu = document.getElementById("story-menu");
 
-const startButton = document.getElementById("start-button");
-const stageButton = document.getElementById("stage-button");
-const settingsButton = document.getElementById("settings-button");
 const storyButton = document.getElementById("story-button");
-const exitButton = document.getElementById("exit-button");
+const startButton = document.getElementById("start-button");
+const settingsButton = document.getElementById("settings-button");
+
+// const stageButton = document.getElementById("stage-button");
+// const exitButton = document.getElementById("exit-button");
 
 // 캔버스를 표시하고 스타일 적용
 function activateGameCanvas() {
@@ -23,13 +24,16 @@ function activateGameCanvas() {
 
 // 메인 버튼 이벤트 바인딩
 document.addEventListener("DOMContentLoaded", function () {
-	startButton.addEventListener("click", function () {
+
+	storyButton.addEventListener("click", function () {
 		mainMenu.classList.add("hidden");
-		activateGameCanvas();
-		startLevel(1); // 기본은 level 1부터 시작
+		storyMenu.classList.remove("hidden");
 	});
 
-	stageButton.addEventListener("click", function () {
+	startButton.addEventListener("click", function () {
+		// mainMenu.classList.add("hidden");
+		// activateGameCanvas();
+		// startLevel(1); // 기본은 level 1부터 시작
 		mainMenu.classList.add("hidden");
 		stageMenu.classList.remove("hidden");
 	});
@@ -39,14 +43,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		settingsMenu.classList.remove("hidden");
 	});
 
-	storyButton.addEventListener("click", function () {
-		mainMenu.classList.add("hidden");
-		storyMenu.classList.remove("hidden");
-	});
+	// stageButton.addEventListener("click", function () {
+	// 	mainMenu.classList.add("hidden");
+	// 	stageMenu.classList.remove("hidden");
+	// });
 
-	exitButton.addEventListener("click", function () {
-		alert("게임을 종료하려면 브라우저를 닫으세요.");
-	});
+	// exitButton.addEventListener("click", function () {
+	// 	alert("게임을 종료하려면 브라우저를 닫으세요.");
+	// });
 
 	// 스테이지 선택 버튼
 	const stageButtons = document.querySelectorAll(".stage-select");
