@@ -90,3 +90,29 @@ button:hover {
 #hud div {
 	margin-bottom: 5px;
 }
+
+
+/* 시나리오 화면 */
+.story-header-row {
+    position: relative;
+    width: 100%;
+    text-align: center;   
+    height: 48px;         
+}
+
+.back-arrow {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.story-header-row h2 {
+    margin: 0;
+    line-height: 48px;   
+    font-size: 1.6rem;
+    display: inline-block;  
+}

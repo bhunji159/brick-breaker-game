@@ -15,6 +15,8 @@ const settingsButton = document.getElementById("settings-button");
 // const stageButton = document.getElementById("stage-button");
 // const exitButton = document.getElementById("exit-button");
 
+const backButtonImage = document.getElementById("back-button-image");
+
 // 캔버스를 표시하고 스타일 적용
 function activateGameCanvas() {
 	canvas.classList.remove("hidden");
@@ -51,6 +53,11 @@ document.addEventListener("DOMContentLoaded", function () {
 	// exitButton.addEventListener("click", function () {
 	// 	alert("게임을 종료하려면 브라우저를 닫으세요.");
 	// });
+
+	backButtonImage.addEventListener("click", function () {
+		storyMenu.classList.add("hidden");
+		mainMenu.classList.remove("hidden");
+	});
 
 	// 스테이지 선택 버튼
 	const stageButtons = document.querySelectorAll(".stage-select");
