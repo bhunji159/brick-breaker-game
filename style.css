@@ -1,13 +1,13 @@
 /* style.css */
 
 body {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	font-family: "Arial", sans-serif;
-	background-color: #000;
-	color: white;
+  margin: 0;
+  padding: 0;
+  background: url("assets/images/mainBG.png") no-repeat center center fixed;
+  background-size: cover;
+  font-family: 'Arial', sans-serif;
 }
+
 
 /* 캔버스 초기에는 스타일 없음 (JS에서 동적으로 추가) */
 canvas#gameCanvas {
@@ -90,3 +90,4 @@ button:hover {
 #hud div {
 	margin-bottom: 5px;
 }
+

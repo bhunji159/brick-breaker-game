@@ -1,273 +1,209 @@
 function startLevel2() {
-	const ctx = canvas.getContext("2d");
-	window.isGameOver = false;
+  const ctx = canvas.getContext("2d");
+  window.isGameOver = false;
 
-	if (typeof window.score !== "number") {
-		window.score = 0;
-	}
-	window.remainingTime = 60;
-	window.animationId = null;
-	window.timerId = null;
-	window.isPaused = false;
+  if (typeof window.score !== "number") window.score = 0;
+  window.remainingTime = 60;
+  window.animationId = null;
+  window.timerId = null;
+  window.isPaused = false;
 
-	const particles = [];
+  const particles = [];
 
-	const hitSound = new Audio("assets/sounds/hit_block.mp3");
-	hitSound.volume = 0.5;
+  const hitSound = new Audio("assets/sounds/hit_block.mp3");
+  hitSound.volume = 0.5;
+  const bgm = new Audio("assets/sounds/bgm.mp3");
+  bgm.loop = true;
+  bgm.volume = 0.3;
+  bgm.play();
+  const clearSound = new Audio("assets/sounds/game_clear.mp3");
+  const failSound = new Audio("assets/sounds/game_over.mp3");
 
-	const bgm = new Audio("assets/sounds/bgm.mp3");
-	bgm.loop = true;
-	bgm.volume = 0.3;
-	bgm.play();
+  const paddle = {
+    x: canvas.width / 2 - 50,
+    y: canvas.height - 30,
+    width: 100,
+    height: 15,
+    speed: 7,
+  };
 
-	const clearSound = new Audio("assets/sounds/game_clear.mp3");
-	const failSound = new Audio("assets/sounds/game_over.mp3");
+  const ball = {
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+    radius: 10,
+    speed: 4,
+    dx: 4,
+    dy: -4,
+  };
 
-	const paddle = {
-		x: canvas.width / 2 - 50,
-		y: canvas.height - 30,
-		width: 100,
-		height: 15,
-		speed: 7,
-	};
+  const brickRowCount = 3;
+  const brickColumnCount = 7;
+  const brickWidth = 90;
+  const brickHeight = 20;
+  const brickPadding = 10;
+  const brickOffsetTop = 50;
+  const brickOffsetLeft = 40;
 
-	const ball = {
-		x: canvas.width / 2,
-		y: canvas.height / 2,
-		radius: 10,
-		speed: 4,
-		dx: 4,
-		dy: -4,
-	};
+  const bgImage = new Image();
+  bgImage.src = "assets/images/crustBG.png";
 
-	const brickRowCount = 3;
-	const brickColumnCount = 7;
-	const brickWidth = 90;
-	const brickHeight = 20;
-	const brickPadding = 10;
-	const brickOffsetTop = 50;
-	const brickOffsetLeft = 40;
+  const brickImg1 = new Image();
+  brickImg1.src = "assets/images/crustBrick1.png";
+  const brickImg2 = new Image();
+  brickImg2.src = "assets/images/crustBrick2.png";
 
-	window.bricks = [];
-	const bricks = window.bricks;
+  const paddleImage = new Image();
+  paddleImage.src = "assets/images/paddle.png";
 
-	for (let c = 0; c < brickColumnCount; c++) {
-		for (let r = 0; r < brickRowCount; r++) {
-			const x = brickOffsetLeft + c * (brickWidth + brickPadding);
-			const y = brickOffsetTop + r * (brickHeight + brickPadding);
-			bricks.push({
-				x,
-				y,
-				width: brickWidth,
-				height: brickHeight,
-				visible: true,
-				color: "#888",
-				hitsRemaining: 2,
-			});
-		}
-	}
+  window.bricks = [];
+  const bricks = window.bricks;
 
-	canvas.addEventListener("mousemove", (e) => {
-		const rect = canvas.getBoundingClientRect();
-		const mouseX = e.clientX - rect.left;
-		paddle.x = mouseX - paddle.width / 2;
-		if (paddle.x < 0) paddle.x = 0;
-		if (paddle.x + paddle.width > canvas.width)
-			paddle.x = canvas.width - paddle.width;
-	});
+  for (let c = 0; c < brickColumnCount; c++) {
+    for (let r = 0; r < brickRowCount; r++) {
+      const x = brickOffsetLeft + c * (brickWidth + brickPadding);
+      const y = brickOffsetTop + r * (brickHeight + brickPadding);
+      bricks.push({
+        x,
+        y,
+        width: brickWidth,
+        height: brickHeight,
+        hitsRemaining: 2,
+        visible: true,
+      });
+    }
+  }
 
-	window.checkLevelClear = function () {
-		if (window.isGameOver) return;
-		const remaining = bricks.filter((b) => b.visible).length;
-		if (remaining === 0) {
-			window.isGameOver = true;
-			cancelAnimationFrame(window.animationId);
-			clearInterval(window.timerId);
-			bgm.pause();
-			clearSound.play();
-			window.score += window.remainingTime * 5;
-			document.getElementById("score").textContent = window.score;
-			document.getElementById("score-value").textContent = window.score;
-			showResultModal(true, window.score, 2);
-		}
-	};
+  canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    paddle.x = mouseX - paddle.width / 2;
+    if (paddle.x < 0) paddle.x = 0;
+    if (paddle.x + paddle.width > canvas.width)
+      paddle.x = canvas.width - paddle.width;
+  });
 
-	window.showResultModal = function (success, finalScore, currentLevel) {
-		const modal = document.getElementById("result-modal");
-		const title = document.getElementById("result-title");
-		const scoreValue = document.getElementById("score-value");
-		const btnMain = document.getElementById("btn-to-main");
-		const btnAction = document.getElementById("btn-next-or-retry");
+  window.checkLevelClear = function () {
+    if (window.isGameOver) return;
+    const remaining = bricks.filter((b) => b.visible).length;
+    if (remaining === 0) {
+      window.isGameOver = true;
+      cancelAnimationFrame(window.animationId);
+      clearInterval(window.timerId);
+      bgm.pause();
+      clearSound.play();
+      window.score += window.remainingTime * 5;
+      document.getElementById("score").textContent = window.score;
+      document.getElementById("score-value").textContent = window.score;
+      showResultModal(true, window.score, 2);
+    }
+  };
 
-		title.textContent = success ? "🎉 스테이지 클리어!" : "💥 게임 오버!";
-		scoreValue.textContent = finalScore;
-		btnAction.textContent = success ? "다음 스테이지" : "다시 플레이";
+  function drawBackground() {
+    ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+  }
 
-		btnMain.onclick = () => {
-			modal.classList.add("hidden");
-			window.location.reload();
-		};
+  function drawBricks() {
+    bricks.forEach((brick) => {
+      if (brick.visible) {
+        const image = brick.hitsRemaining === 2 ? brickImg1 : brickImg2;
+        ctx.drawImage(image, brick.x, brick.y, brick.width, brick.height);
+      }
+    });
+  }
 
-		btnAction.onclick = () => {
-			modal.classList.add("hidden");
-			if (success) {
-				startLevel(currentLevel + 1);
-			} else {
-				window.score = 0;
-				startLevel(currentLevel);
-			}
-		};
+  function drawPaddle() {
+    ctx.drawImage(paddleImage, paddle.x, paddle.y, paddle.width, paddle.height);
+  }
 
-		modal.classList.remove("hidden");
-	};
+  function drawBall() {
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "white";
+    ctx.fill();
+    ctx.closePath();
+  }
 
-	function drawPaddle() {
-		ctx.fillStyle = "white";
-		ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-	}
+  function drawScore() {
+    document.getElementById("score").textContent = window.score;
+    ctx.fillStyle = "white";
+    ctx.font = "16px Arial";
+    ctx.fillText(`점수: ${window.score}`, 10, 20);
+    ctx.fillText(`남은 시간: ${window.remainingTime}s`, 10, 40);
+  }
 
-	function drawBall() {
-		ctx.beginPath();
-		ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-		ctx.fillStyle = "white";
-		ctx.fill();
-		ctx.closePath();
-	}
+  function update() {
+    drawBackground();
 
-	function drawBricks() {
-		bricks.forEach((brick) => {
-			if (brick.visible) {
-				ctx.fillStyle = brick.color;
-				ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
-			}
-		});
-	}
+    ball.x += ball.dx;
+    ball.y += ball.dy;
 
-	function drawScore() {
-		document.getElementById("score").textContent = window.score;
-		ctx.fillStyle = "white";
-		ctx.font = "16px Arial";
-		ctx.fillText(`점수: ${window.score}`, 10, 20);
-		ctx.fillText(`남은 시간: ${window.remainingTime}s`, 10, 40);
-	}
+    if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) {
+      ball.dx *= -1;
+    }
+    if (ball.y < ball.radius) {
+      ball.dy *= -1;
+    }
 
-	function createParticles(x, y, color) {
-		for (let i = 0; i < 10; i++) {
-			particles.push({
-				x,
-				y,
-				dx: (Math.random() - 0.5) * 4,
-				dy: (Math.random() - 0.5) * 4,
-				life: 30,
-				color,
-			});
-		}
-	}
+    if (ball.y > canvas.height - ball.radius) {
+      cancelAnimationFrame(window.animationId);
+      clearInterval(window.timerId);
+      bgm.pause();
+      failSound.play();
+      showResultModal(false, window.score, 2);
+      return;
+    }
 
-	function updateParticles() {
-		particles.forEach((p) => {
-			p.x += p.dx;
-			p.y += p.dy;
-			p.life -= 1;
-		});
-		for (let i = particles.length - 1; i >= 0; i--) {
-			if (particles[i].life <= 0) {
-				particles.splice(i, 1);
-			}
-		}
-	}
+    if (
+      ball.y + ball.radius > paddle.y &&
+      ball.x > paddle.x &&
+      ball.x < paddle.x + paddle.width
+    ) {
+      ball.dy *= -1;
+      ball.y = paddle.y - ball.radius;
+    }
 
-	function drawParticles() {
-		particles.forEach((p) => {
-			ctx.fillStyle = p.color;
-			ctx.fillRect(p.x, p.y, 2, 2);
-		});
-	}
+    bricks.forEach((brick) => {
+      if (
+        brick.visible &&
+        ball.x > brick.x &&
+        ball.x < brick.x + brick.width &&
+        ball.y > brick.y &&
+        ball.y < brick.y + brick.height
+      ) {
+        ball.dy *= -1;
+        brick.hitsRemaining--;
+        if (brick.hitsRemaining <= 0) {
+          brick.visible = false;
+          window.score += 20;
+        } else {
+          window.score += 10;
+        }
+        document.getElementById("score").textContent = window.score;
+        document.getElementById("score-value").textContent = window.score;
+        hitSound.currentTime = 0;
+        hitSound.play();
+      }
+    });
 
-	function clear() {
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-	}
+    window.checkLevelClear();
+    drawBricks();
+    drawPaddle();
+    drawBall();
+    drawScore();
 
-	function update() {
-		clear();
+    window.animationId = requestAnimationFrame(update);
+  }
 
-		ball.x += ball.dx;
-		ball.y += ball.dy;
+  window.timerId = setInterval(() => {
+    window.remainingTime--;
+    if (window.remainingTime <= 0) {
+      clearInterval(window.timerId);
+      cancelAnimationFrame(window.animationId);
+      bgm.pause();
+      failSound.play();
+      showResultModal(false, window.score, 2);
+    }
+  }, 1000);
 
-		if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) {
-			ball.dx *= -1;
-		}
-		if (ball.y < ball.radius) {
-			ball.dy *= -1;
-		}
-
-		if (ball.y > canvas.height - ball.radius) {
-			cancelAnimationFrame(window.animationId);
-			clearInterval(window.timerId);
-			bgm.pause();
-			failSound.play();
-			showResultModal(false, window.score, 2);
-			return;
-		}
-
-		if (
-			ball.y + ball.radius > paddle.y &&
-			ball.x > paddle.x &&
-			ball.x < paddle.x + paddle.width
-		) {
-			ball.dy *= -1;
-			ball.y = paddle.y - ball.radius;
-		}
-
-		bricks.forEach((brick) => {
-			if (brick.visible) {
-				if (
-					ball.x > brick.x &&
-					ball.x < brick.x + brick.width &&
-					ball.y > brick.y &&
-					ball.y < brick.y + brick.height
-				) {
-					ball.dy *= -1;
-					brick.hitsRemaining--;
-					if (brick.hitsRemaining === 1) {
-						brick.color = "#f97316";
-					} else if (brick.hitsRemaining <= 0) {
-						brick.visible = false;
-						window.score += 20;
-						document.getElementById("score").textContent = window.score;
-						document.getElementById("score-value").textContent = window.score;
-						createParticles(ball.x, ball.y, brick.color);
-						hitSound.currentTime = 0;
-						hitSound.play();
-					}
-				}
-			}
-		});
-
-		window.checkLevelClear();
-		if (window.isGameOver) return;
-
-		updateParticles();
-
-		drawPaddle();
-		drawBall();
-		drawBricks();
-		drawScore();
-		drawParticles();
-
-		window.animationId = requestAnimationFrame(update);
-	}
-
-	window.timerId = setInterval(() => {
-		window.remainingTime--;
-		if (window.remainingTime <= 0) {
-			clearInterval(window.timerId);
-			cancelAnimationFrame(window.animationId);
-			bgm.pause();
-			failSound.play();
-			showResultModal(false, window.score, 2);
-		}
-	}, 1000);
-
-	update();
+  update();
 }
