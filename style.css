@@ -96,7 +96,7 @@ button:hover {
 }
 
 
-
+/* 화면 header 스타일 */
 .header-row {
     position: relative;
     width: 100%;
@@ -123,4 +123,10 @@ button:hover {
     line-height: 48px;   
     font-size: 1.6rem;
     display: inline-block;  
+}
+
+
+.settings-group {
+	padding: 10px 20px;
+	text-align: left;
 }

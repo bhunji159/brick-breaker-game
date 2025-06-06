@@ -1,5 +1,16 @@
 // main.js: 버튼과 메뉴 전환, 레벨 시작 진입점
 
+window.ballImages = {
+    basic: new Image(),
+    star: new Image(),
+    eye: new Image()
+};
+window.ballImages.basic.src = "assets/images/ball_basic.png";
+window.ballImages.star.src = "assets/images/ball_star.png";
+window.ballImages.eye.src = "assets/images/ball_eye.png";
+
+window.currentBallType = "basic";
+
 // DOM 요소
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -80,6 +91,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			stageMenu.classList.add("hidden");
 			activateGameCanvas();
 			startLevel(level);
+		});
+	});
+
+	// 라디오버튼으로 공 종류 변경
+	const ballRadios = document.querySelectorAll('input[name="ball"]');
+	ballRadios.forEach(radio => {
+		radio.addEventListener('change', function () {
+			if (this.checked) {
+				window.currentBallType = this.value; 
+				console.log("currentBallType:", window.currentBallType);
+			}
 		});
 	});
 });

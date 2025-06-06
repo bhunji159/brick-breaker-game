@@ -132,6 +132,31 @@ function startLevel3() {
 		ctx.fillText(`남은 시간: ${window.remainingTime}s`, 10, 40);
 	}
 
+	function drawBall() {
+		const img = window.ballImages[window.currentBallType];
+		if (img && img.complete && img.naturalWidth > 0) {
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+			ctx.fillStyle = "white";
+			ctx.fill();
+			ctx.closePath();
+
+			ctx.drawImage(
+				window.ballImages[window.currentBallType],
+				ball.x - ball.radius,
+				ball.y - ball.radius,
+				ball.radius * 2,
+				ball.radius * 2
+			);
+		} else {
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+			ctx.fillStyle = "white";
+			ctx.fill();
+			ctx.closePath();
+		}
+	}
+
 	function clear() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	}
@@ -200,10 +225,11 @@ function startLevel3() {
 		drawScore();
 		ctx.fillStyle = "white";
 		ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
-		ctx.beginPath();
-		ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-		ctx.fill();
-		ctx.closePath();
+		// ctx.beginPath();
+		// ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+		// ctx.fill();
+		// ctx.closePath();
+		drawBall();
 
 		bricks.forEach((brick) => {
 			if (brick.visible) {
