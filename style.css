@@ -125,8 +125,15 @@ button:hover {
     display: inline-block;  
 }
 
-
+/* 환경 설정 */
 .settings-group {
 	padding: 10px 20px;
 	text-align: left;
+}
+
+.ball-preview {
+	width: 24px;   
+	height: 24px;  
+	vertical-align: middle; 
+	margin-right: 4px;      
 }
