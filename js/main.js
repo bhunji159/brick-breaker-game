@@ -8,8 +8,14 @@ window.ballImages = {
 window.ballImages.basic.src = "assets/images/ball_basic.png";
 window.ballImages.star.src = "assets/images/ball_star.png";
 window.ballImages.eye.src = "assets/images/ball_eye.png";
-
 window.currentBallType = "basic";
+
+const musicSelect = document.getElementById("music-select");
+window.currentMusic = musicSelect.value;  
+musicSelect.addEventListener("change", () => {
+	window.currentMusic = musicSelect.value;
+	console.log("선택된 BGM:", window.currentMusic);
+});
 
 // DOM 요소
 const canvas = document.getElementById("gameCanvas");

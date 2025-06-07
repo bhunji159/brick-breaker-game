@@ -17,10 +17,18 @@ function startLevel3() {
 	const hitSound = new Audio("assets/sounds/hit_block.mp3");
 	hitSound.volume = 0.5;
 
-	const bgm = new Audio("assets/sounds/bgm.mp3");
-	bgm.loop = true;
-	bgm.volume = 0.3;
-	bgm.play();
+	let bgm = null;
+	if (window.currentMusic !== "off") {
+		bgm = new Audio(`assets/sounds/${window.currentMusic}.mp3`);
+		bgm.loop = true;
+		bgm.volume = 0.3;
+		bgm.play();
+	} else {
+		bgm = new Audio("assets/sounds/bgm1.mp3");
+		bgm.loop = true;
+		bgm.volume = 0.3;
+		bgm.play();
+	}
 
 	const clearSound = new Audio("assets/sounds/game_clear.mp3");
 	const failSound = new Audio("assets/sounds/game_over.mp3");
