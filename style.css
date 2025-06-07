@@ -5,6 +5,8 @@ body {
 	padding: 0;
 	overflow: hidden;
 	font-family: "Arial", sans-serif;
+  	background: url("assets/images/mainBG.png") no-repeat center center fixed;
+  	background-size: cover;
 	background-color: #000;
 	color: white;
 }

@@ -3,23 +3,23 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>지구 중심 탐사 벽돌깨기</title>
+		<title>지구 땅굴 파기 대회</title>
 		<link rel="stylesheet" href="style.css" />
+
 	</head>
 	<body>
 		<!-- 게임 캔버스 -->
-		<canvas id="gameCanvas" width="800" height="600" class="hidden"></canvas>
+		<canvas id="gameCanvas" width="1200" height="800" class="hidden"></canvas>
 
 		<!-- UI 오버레이 -->
 		<div id="ui">
 			<!-- 메인 메뉴 -->
 			<div id="main-menu" class="menu">
-				<h1>🌍 지구 중심 탐사 작전</h1>
-				<button id="start-button">게임 시작</button>
+				<h1> 지구 땅굴 파기 대회</h1>
+				<button id="story-button">시나리오 모드</button>
 				<button id="stage-button">스테이지 선택</button>
-				<button id="story-button">시나리오 보기</button>
+				<button id="start-button">게임 시작</button>
 				<button id="settings-button">설정</button>
-				<button id="exit-button">게임 종료</button>
 			</div>
 
 			<!-- 설정 메뉴 -->
@@ -37,19 +37,7 @@
 				<button class="stage-select" data-stage="1">스테이지 1 - 지각</button>
 				<button class="stage-select" data-stage="2">스테이지 2 - 멘틀</button>
 				<button class="stage-select" data-stage="3">스테이지 3 - 외핵</button>
-				<button class="stage-select" data-stage="4">
-					스테이지 4 - 내핵 (보스)
-				</button>
-			</div>
-
-			<!-- 시나리오 설명 -->
-			<div id="story-menu" class="menu hidden">
-				<h2>📖 시나리오</h2>
-				<p>
-					지구 중심에서 이상한 신호가 감지되었다. 탐사선을 타고 지각, 멘틀,
-					외핵을 지나 내핵까지 진입하라! 그곳에서 지구를 위협하는 괴 생명체를
-					저지하고 지구를 구하자!
-				</p>
+				<button class="stage-select" data-stage="4">스테이지 4 - 내핵	</button>
 			</div>
 
 			<!-- 게임 결과 모달 -->
@@ -62,7 +50,7 @@
 				</div>
 			</div>
 
-			<!-- 게임 HUD -->
+			<!-- 게임 HUD (수정 예정) -->
 			<div id="hud" class="hidden">
 				<div>점수: <span id="score">0</span></div>
 				<div>남은 목숨: <span id="lives">3</span></div>
@@ -70,7 +58,6 @@
 				<div>아이템: <span id="items">없음</span></div>
 			</div>
 		</div>
-
 		<!-- 순서 중요! -->
 		<script src="./js/levelManager.js"></script>
 
