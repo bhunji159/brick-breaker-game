@@ -147,7 +147,8 @@ function startLevel4() {
 
 		// 1. 검은색 배경 바 그리기
 		ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // 반투명 검정
-		ctx.fillRect(0, 0, canvas.width, infoBarHeight);
+		ctx.fillRect(0, 0, canvas.width/8, infoBarHeight);
+		ctx.fillRect((canvas.width/8)*7, 0, canvas.width/8, infoBarHeight);
 
 		// 2. 텍스트 스타일 설정
 		ctx.font = '22px Arial';
