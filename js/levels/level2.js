@@ -10,14 +10,34 @@ function startLevel2() {
 	const paddleImage = new Image();
 	paddleImage.src = "assets/images/paddle.png";
 
+	// const hitSound = new Audio("assets/sounds/hit_block.mp3");
+	// hitSound.volume = 0.5;
+	// const bgm = new Audio("assets/sounds/bgm2.mp3");
+	// bgm.loop = true;
+	// bgm.volume = 0.3;
+	// bgm.play();
+	// const clearSound = new Audio("assets/sounds/game_clear.mp3");
+	// const failSound = new Audio("assets/sounds/game_over.mp3");
+
 	const hitSound = new Audio("assets/sounds/hit_block.mp3");
 	hitSound.volume = 0.5;
-	const bgm = new Audio("assets/sounds/bgm2.mp3");
-	bgm.loop = true;
-	bgm.volume = 0.3;
-	bgm.play();
+
+	let bgm = null;
+	if (window.currentMusic !== "off") {
+		bgm = new Audio(`assets/sounds/${window.currentMusic}.mp3`);
+		bgm.loop = true;
+		bgm.volume = 0.3;
+		bgm.play();
+	} else {
+		bgm = new Audio("assets/sounds/bgm1.mp3");
+		bgm.loop = true;
+		bgm.volume = 0.3;
+		bgm.play();
+	}
+
 	const clearSound = new Audio("assets/sounds/game_clear.mp3");
 	const failSound = new Audio("assets/sounds/game_over.mp3");
+
 
 	// --- 게임 환경 설정 ---
 	const ctx = canvas.getContext("2d");
@@ -96,11 +116,28 @@ function startLevel2() {
 	}
 
 	function drawBall(ball) {
-		ctx.beginPath();
-		ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-		ctx.fillStyle = "white";
-		ctx.fill();
-		ctx.closePath();
+		const img = window.ballImages[window.currentBallType];
+		if (img && img.complete && img.naturalWidth > 0) {
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+			ctx.fillStyle = "white";
+			ctx.fill();
+			ctx.closePath();
+
+			ctx.drawImage(
+				window.ballImages[window.currentBallType],
+				ball.x - ball.radius,
+				ball.y - ball.radius,
+				ball.radius * 2,
+				ball.radius * 2
+			);
+		} else {
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+			ctx.fillStyle = "white";
+			ctx.fill();
+			ctx.closePath();
+		}
 	}
 
 	// [수정] 내구도에 따라 다른 벽돌 이미지를 그리도록 수정

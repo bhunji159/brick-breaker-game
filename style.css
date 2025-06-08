@@ -56,6 +56,10 @@ button {
 	transition: background-color 0.2s;
 }
 
+#stage-menu .stage-select:last-child {
+    padding: 10px;
+}
+
 button:hover {
 	/*background-color: #2563eb;*/
 	background-color: red;
@@ -93,4 +97,47 @@ button:hover {
 
 #hud div {
 	margin-bottom: 5px;
+}
+
+
+/* 화면 header 스타일 */
+.header-row {
+    position: relative;
+    width: 100%;
+    text-align: center;   
+    height: 48px;         
+}
+
+#stage-menu .header-row {
+	width: 300px;
+}
+
+.back-arrow {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.header-row h2 {
+    margin: 0;
+    line-height: 48px;   
+    font-size: 1.6rem;
+    display: inline-block;  
+}
+
+/* 환경 설정 */
+.settings-group {
+	padding: 10px 20px;
+	text-align: left;
+}
+
+.ball-preview {
+	width: 24px;   
+	height: 24px;  
+	vertical-align: middle; 
+	margin-right: 4px;      
 }

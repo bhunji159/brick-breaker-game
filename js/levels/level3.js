@@ -9,12 +9,31 @@ function startLevel3() {
 	const paddleImage = new Image();
 	paddleImage.src = "assets/images/paddle.png";
 
+	// const hitSound = new Audio("assets/sounds/hit_block.mp3");
+	// hitSound.volume = 0.3;
+	// const bgm = new Audio("assets/sounds/bgm3.mp3");
+	// bgm.loop = true;
+	// bgm.volume = 0.3;
+	// bgm.play();
+	// const clearSound = new Audio("assets/sounds/game_clear.mp3");
+	// const failSound = new Audio("assets/sounds/game_over.mp3");
+
 	const hitSound = new Audio("assets/sounds/hit_block.mp3");
-	hitSound.volume = 0.3;
-	const bgm = new Audio("assets/sounds/bgm3.mp3");
-	bgm.loop = true;
-	bgm.volume = 0.3;
-	bgm.play();
+	hitSound.volume = 0.5;
+
+	let bgm = null;
+	if (window.currentMusic !== "off") {
+		bgm = new Audio(`assets/sounds/${window.currentMusic}.mp3`);
+		bgm.loop = true;
+		bgm.volume = 0.3;
+		bgm.play();
+	} else {
+		bgm = new Audio("assets/sounds/bgm1.mp3");
+		bgm.loop = true;
+		bgm.volume = 0.3;
+		bgm.play();
+	}
+
 	const clearSound = new Audio("assets/sounds/game_clear.mp3");
 	const failSound = new Audio("assets/sounds/game_over.mp3");
 
@@ -95,11 +114,34 @@ function startLevel3() {
 	}
 
 	function drawBall(ball) {
-		ctx.beginPath();
-		ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-		ctx.fillStyle = "white";
-		ctx.fill();
-		ctx.closePath();
+		// ctx.beginPath();
+		// ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+		// ctx.fillStyle = "white";
+		// ctx.fill();
+		// ctx.closePath();
+
+		const img = window.ballImages[window.currentBallType];
+		if (img && img.complete && img.naturalWidth > 0) {
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+			ctx.fillStyle = "white";
+			ctx.fill();
+			ctx.closePath();
+
+			ctx.drawImage(
+				window.ballImages[window.currentBallType],
+				ball.x - ball.radius,
+				ball.y - ball.radius,
+				ball.radius * 2,
+				ball.radius * 2
+			);
+		} else {
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+			ctx.fillStyle = "white";
+			ctx.fill();
+			ctx.closePath();
+		}
 	}
 
 	function drawBricks() {

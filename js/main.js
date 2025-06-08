@@ -1,5 +1,34 @@
 // main.js: 버튼과 메뉴 전환, 레벨 시작 진입점
 
+// 공 이미지, BGM 설정
+window.ballImages = {
+    basic: new Image(),
+    star: new Image(),
+    eye: new Image()
+};
+window.ballImages.basic.src = "assets/images/ball_basic.png";
+window.ballImages.star.src = "assets/images/ball_star.png";
+window.ballImages.eye.src = "assets/images/ball_eye.png";
+window.currentBallType = "basic";
+
+const musicSelect = document.getElementById("music-select");
+window.currentMusic = musicSelect.value;  
+musicSelect.addEventListener("change", () => {
+	window.currentMusic = musicSelect.value;
+	console.log("선택된 BGM:", window.currentMusic);
+});
+
+const startButton = document.getElementById("start-button");
+const settingsButton = document.getElementById("settings-button");
+
+// const stageButton = document.getElementById("stage-button");
+// const exitButton = document.getElementById("exit-button");
+
+// 뒤로가기 
+const senarioBackArrow = document.getElementById("senario-back-arrow");
+const stageBackArrow = document.getElementById("stage-back-arrow");
+const settingBackArrow = document.getElementById("settings-back-arrow");
+
 // DOM 요소
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -8,9 +37,6 @@ const stageMenu = document.getElementById("stage-menu");
 const settingsMenu = document.getElementById("settings-menu");
 const storyMenu = document.getElementById("story-menu");
 
-const startButton = document.getElementById("start-button");
-const stageButton = document.getElementById("stage-button");
-const settingsButton = document.getElementById("settings-button");
 const storyButton = document.getElementById("story-button");
 
 // [추가] 설정 메뉴 UI 요소
@@ -38,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		startStory(1);
 	});
 
-	stageButton.addEventListener("click", function () {
+	startButton.addEventListener("click", function () {
 		mainMenu.classList.add("hidden");
 		stageMenu.classList.remove("hidden");
 	});
@@ -49,8 +75,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
     backToMainButton.addEventListener('click', () => {
-    settingsMenu.classList.add('hidden');
-    mainMenu.classList.remove('hidden');
+        settingsMenu.classList.add('hidden');
+        mainMenu.classList.remove('hidden');
     });
 
     // [추가] 패들 너비 설정 변경 시 gameSettings 객체 업데이트
@@ -65,6 +91,21 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(`제한 시간 변경: ${window.gameSettings.gameTime}`);
     });
 
+	senarioBackArrow.addEventListener("click", function () {
+		storyMenu.classList.add("hidden");
+		mainMenu.classList.remove("hidden");
+	});
+
+	stageBackArrow.addEventListener("click", function () {
+		stageMenu.classList.add("hidden");
+		mainMenu.classList.remove("hidden");
+	});
+
+	settingBackArrow.addEventListener("click", function () {
+		settingsMenu.classList.add("hidden");
+		mainMenu.classList.remove("hidden");
+	});
+
 	const stageButtons = document.querySelectorAll(".stage-select");
 	stageButtons.forEach((btn) => {
 		btn.addEventListener("click", function () {
@@ -72,6 +113,17 @@ document.addEventListener("DOMContentLoaded", function () {
 			stageMenu.classList.add("hidden");
 			activateGameCanvas();
 			startStory(level);
+		});
+	});
+
+	// 라디오버튼으로 공 종류 변경
+	const ballRadios = document.querySelectorAll('input[name="ball"]');
+	ballRadios.forEach(radio => {
+		radio.addEventListener('change', function () {
+			if (this.checked) {
+				window.currentBallType = this.value; 
+				console.log("currentBallType:", window.currentBallType);
+			}
 		});
 	});
 });

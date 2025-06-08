@@ -84,11 +84,34 @@ function startLevel4() {
 	}
 
 	function drawBall(ball) {
-		ctx.beginPath();
-		ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-		ctx.fillStyle = "white";
-		ctx.fill();
-		ctx.closePath();
+		// ctx.beginPath();
+		// ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+		// ctx.fillStyle = "white";
+		// ctx.fill();
+		// ctx.closePath();
+
+		const img = window.ballImages[window.currentBallType];
+		if (img && img.complete && img.naturalWidth > 0) {
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+			ctx.fillStyle = "white";
+			ctx.fill();
+			ctx.closePath();
+
+			ctx.drawImage(
+				window.ballImages[window.currentBallType],
+				ball.x - ball.radius,
+				ball.y - ball.radius,
+				ball.radius * 2,
+				ball.radius * 2
+			);
+		} else {
+			ctx.beginPath();
+			ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+			ctx.fillStyle = "white";
+			ctx.fill();
+			ctx.closePath();
+		}
 	}
 
 	function drawBricks() {

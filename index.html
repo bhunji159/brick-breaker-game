@@ -21,7 +21,7 @@
 				<button id="settings-button">설정</button>
 			</div>
 
-			<!-- [수정] 설정 메뉴 -->
+			<!-- [수정] 설정 메뉴
 			<div id="settings-menu" class="menu hidden">
 				<h2>설정</h2>
 				<div class="setting-option">
@@ -41,15 +41,80 @@
 					</select>
 				</div>
 				<button id="back-to-main-button">메인으로 돌아가기</button>
-			</div>
+			</div> -->
 
-			<!-- 스테이지 선택 메뉴 -->
+			<!-- 게임 시작 -> 스테이지 선택 메뉴 -->
 			<div id="stage-menu" class="menu hidden">
-				<h2>스테이지 선택</h2>
+				<div class="header-row">
+					<img id="stage-back-arrow" class="back-arrow" 
+					src="assets/images/arrow_back.png" alt="뒤로가기" />
+					<h2>스테이지 선택</h2>
+				</div>
 				<button class="stage-select" data-stage="1">스테이지 1 - 지각</button>
 				<button class="stage-select" data-stage="2">스테이지 2 - 멘틀</button>
 				<button class="stage-select" data-stage="3">스테이지 3 - 외핵</button>
 				<button class="stage-select" data-stage="4">스테이지 4 - 내핵</button>
+			</div>
+
+			<!-- 설정 메뉴 -->
+			<div id="settings-menu" class="menu hidden">
+				<div class="header-row">
+					<img id="settings-back-arrow" class="back-arrow" 
+					src="assets/images/arrow_back.png" alt="뒤로가기" />
+					<h2>설정</h2>
+				</div>
+				<div class="setting-option">
+					<label for="paddle-width-select">패들 너비:</label>
+					<select id="paddle-width-select">
+						<option value="100">좁게</option>
+						<option value="200" selected>보통</option>
+						<option value="300">넓게</option>
+					</select>
+				</div>
+				<div class="setting-option">
+					<label for="game-time-select">제한 시간:</label>
+					<select id="game-time-select">
+						<option value="60">60초</option>
+						<option value="90" selected>90초</option>
+						<option value="120">120초</option>
+					</select>
+				</div>
+				<div class="settings-group">
+					<label for="background-select">배경 이미지:</label>
+					<select id="background-select">
+						<option value="space">우주</option>
+						<option value="blue">파란색</option>
+						<option value="gradient">그라데이션</option>
+					</select>
+					<!-- 썸네일 미리보기 이미지(선택) -->
+					<img id="bg-preview" src="assets/images/bg_space.jpg" alt="미리보기" style="width:64px; height:40px; margin-left:12px;">
+				</div>
+				<div class="settings-group">
+					<label for="music-select">배경 음악:</label>
+					<select id="music-select">
+						<option value="bgm1">음악1</option>
+						<option value="bgm2">음악2</option>
+						<option value="bgm3">음악3</option>
+						<option value="off">OFF</option>
+					</select>
+				</div>
+				<div class="settings-group">
+					<label>공:</label>
+					<label>
+						<input type="radio" name="ball" value="basic" checked> 기본
+						<img src="assets/images/ball_basic.png" alt="기본" class="ball-preview">
+					</label>
+					<label>
+						<input type="radio" name="ball" value="star"> 별
+						<img src="assets/images/ball_star.png" alt="별" class="ball-preview">
+					</label>
+					<label>
+						<input type="radio" name="ball" value="eye"> 눈알
+						<img src="assets/images/ball_eye.png" alt="눈알" class="ball-preview">
+					</label>
+					<!-- 썸네일 아이콘 추가 가능 -->
+				</div>
+				<button id="back-to-main-button">메인으로 돌아가기</button>
 			</div>
 
 			<!-- 게임 결과 모달 -->
@@ -71,6 +136,7 @@
 			</div>
 		</div>
 		<!-- 순서 중요! -->
+		<script src="./js/main.js"></script>
 		<script src="./js/levelManager.js"></script>
 
 		<script src="./js/levels/level1.js"></script>
@@ -79,6 +145,5 @@
 		<script src="./js/levels/level4.js"></script>
 		<script src="./js/cheat.js"></script>
 
-		<script src="./js/main.js"></script>
 	</body>
 </html>
