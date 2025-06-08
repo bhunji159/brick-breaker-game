@@ -23,17 +23,12 @@ function startLevel2() {
 	hitSound.volume = 0.5;
 
 	let bgm = null;
-	if (window.currentMusic !== "off") {
+	if (window.currentMusic != null) {
 		bgm = new Audio(`assets/sounds/${window.currentMusic}.mp3`);
 		bgm.loop = true;
 		bgm.volume = 0.3;
 		bgm.play();
-	} else {
-		bgm = new Audio("assets/sounds/bgm1.mp3");
-		bgm.loop = true;
-		bgm.volume = 0.3;
-		bgm.play();
-	}
+	} 
 
 	const clearSound = new Audio("assets/sounds/game_clear.mp3");
 	const failSound = new Audio("assets/sounds/game_over.mp3");
