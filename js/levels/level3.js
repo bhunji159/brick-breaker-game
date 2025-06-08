@@ -2,14 +2,16 @@ function startLevel3() {
 	// --- 이미지 및 사운드 로드 ---
 	const bgImage = new Image();
 	bgImage.src = "assets/images/mantleBG.png";
-	const brickImage = new Image();
-	brickImage.src = "assets/images/mantleBrick1.png";
+	const brickImage1 = new Image();
+	brickImage1.src = "assets/images/mantleBrick1.png";
+	const brickImage2 = new Image();
+	brickImage2.src = "assets/images/mantleBrick2.png";
 	const paddleImage = new Image();
 	paddleImage.src = "assets/images/paddle.png";
 
 	const hitSound = new Audio("assets/sounds/hit_block.mp3");
 	hitSound.volume = 0.3;
-	const bgm = new Audio("assets/sounds/bgm.mp3");
+	const bgm = new Audio("assets/sounds/bgm3.mp3");
 	bgm.loop = true;
 	bgm.volume = 0.3;
 	bgm.play();
@@ -23,7 +25,7 @@ function startLevel3() {
 	if (typeof window.score !== "number") {
 		window.score = 0;
 	}
-	window.remainingTime = 120;
+	window.remainingTime = window.gameSettings.gameTime;
 	window.animationId = null;
 	window.timerId = null;
 	window.isPaused = false;
@@ -35,7 +37,7 @@ function startLevel3() {
 	const paddle = {
 		x: canvas.width / 2 - 100,
 		y: canvas.height - 30,
-		width: 200,
+		width: window.gameSettings.paddleWidth,
 		height: 15,
 		speed: 7,
 	};
@@ -44,18 +46,18 @@ function startLevel3() {
 		x: canvas.width / 2,
 		y: canvas.height - 100, // 아래에서 시작
 		radius: 10,
-		speed: 3,
+		speed: 4,
 		dx: 0,
-		dy: -3, // 위로 발사
+		dy: -4, // 위로 발사
 	}, ];
 
 	let ballSizeLevel = 0;
 
-	const brickRowCount = 5;
-	const brickColumnCount = 8;
-	const brickWidth = 120;
-	const brickHeight = 40;
-	const brickPadding = 20;
+	const brickRowCount = 9;
+	const brickColumnCount = 9;
+	const brickWidth = 100;
+	const brickHeight = 50;
+	const brickPadding = 0;
 	const brickOffsetTop = 50;
 	const brickOffsetLeft = 80;
 
@@ -103,13 +105,30 @@ function startLevel3() {
 	function drawBricks() {
 		bricks.forEach((brick) => {
 			if (brick.visible) {
-				ctx.drawImage(brickImage, brick.x, brick.y, brick.width, brick.height);
+				ctx.drawImage(brickImage1, brick.x, brick.y, brick.width, brick.height);
 			}
 		});
 	}
 
 	function drawScore() {
-		document.getElementById("score").textContent = window.score;
+		const infoBarHeight = 40; // 상단 정보 바의 높이
+
+		// 1. 검은색 배경 바 그리기
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // 반투명 검정
+		ctx.fillRect(0, 0, canvas.width, infoBarHeight);
+
+		// 2. 텍스트 스타일 설정
+		ctx.font = '22px Arial';
+		ctx.fillStyle = 'white';
+		ctx.textBaseline = 'middle'; // 텍스트를 수직 중앙 정렬
+
+		// 3. 점수 표시 (왼쪽 정렬)
+		ctx.textAlign = 'left';
+		ctx.fillText(`Score: ${window.score}`, 20, infoBarHeight / 2);
+
+		// 4. 남은 시간 표시 (오른쪽 정렬)
+		ctx.textAlign = 'right';
+		ctx.fillText(`Time: ${window.remainingTime}`, canvas.width - 20, infoBarHeight / 2);
 	}
 
 	function drawParticles() {
@@ -168,7 +187,7 @@ function startLevel3() {
 	}
 
 	function createItem(x, y) {
-		if (Math.random() < 0.2) {
+		if (Math.random() < 0.1) {
 			const itemType = Math.random() < 0.5 ? 'multi-ball' : 'big-ball';
 			items.push({
 				x,
@@ -184,7 +203,7 @@ function startLevel3() {
 	function activatePowerUp(type) {
 		if (type === 'multi-ball') {
 			const angles = [Math.PI / 6, Math.PI / 2, 5 * Math.PI / 6];
-			const newBallSpeed = 5;
+			const newBallSpeed = 4;
 			angles.forEach(angle => {
 				balls.push({
 					x: paddle.x + paddle.width / 2,
@@ -266,7 +285,12 @@ function startLevel3() {
 				continue;
 			}
 
-			if (ball.y + ball.radius > paddle.y && ball.y - ball.radius < paddle.y + paddle.height && ball.x + ball.radius > paddle.x && ball.x - ball.radius < paddle.x + paddle.width) {
+			if (
+				ball.y + ball.radius > paddle.y &&
+				ball.y - ball.radius < paddle.y + paddle.height &&
+				ball.x + ball.radius > paddle.x &&
+				ball.x - ball.radius < paddle.x + paddle.width
+			) {
 				ball.dy *= -1;
 				ball.y = paddle.y - ball.radius;
 				let collidePoint = ball.x - (paddle.x + paddle.width / 2);
@@ -281,10 +305,10 @@ function startLevel3() {
 				if (brick.visible) {
 					if (ball.x + ball.radius > brick.x && ball.x - ball.radius < brick.x + brick.width && ball.y + ball.radius > brick.y && ball.y - ball.radius < brick.y + brick.height) {
 						ball.dy *= -1;
-						// [추가] 공과 벽돌의 x축 속도 차이를 공의 방향에 일부 반영하여 더 역동적인 충돌 효과
-						if (Math.sign(ball.dx) !== Math.sign(brick.dx)) {
-							ball.dx += brick.dx * 0.2;
-						}
+						// // // [추가] 공과 벽돌의 x축 속도 차이를 공의 방향에 일부 반영하여 더 역동적인 충돌 효과
+						// // if (Math.sign(ball.dx) !== Math.sign(brick.dx)) {
+						// // 	ball.dx += brick.dx * 0.2;
+						// // }
 						brick.visible = false;
 						window.score += 30;
 						createParticles(ball.x, ball.y);
@@ -330,9 +354,9 @@ function startLevel3() {
 		const scoreValue = document.getElementById("score-value");
 		const btnMain = document.getElementById("btn-to-main");
 		const btnAction = document.getElementById("btn-next-or-retry");
-		title.textContent = success ? "🎉 스테이지 클리어!" : "💥 게임 오버!";
+		title.textContent = success ? "굴착 성공!" : "실패..";
 		scoreValue.textContent = finalScore;
-		btnAction.textContent = success ? "다음 스테이지" : "다시 플레이";
+		btnAction.textContent = success ? "더 깊이 내려가기" : "다시 파기";
 		btnMain.onclick = () => {
 			modal.classList.add("hidden");
 			window.location.reload();
@@ -352,9 +376,8 @@ function startLevel3() {
 	// --- 타이머 ---
 	timerId = setInterval(() => {
 		if (isGameOver) return;
-		remainingTime--;
-		document.getElementById("time").textContent = remainingTime;
-		if (remainingTime <= 0) gameOver(false);
+		window.remainingTime--;
+		if (window.remainingTime <= 0) gameOver(false);
 	}, 1000);
 
 	// --- 게임 시작 ---

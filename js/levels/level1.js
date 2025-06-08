@@ -9,7 +9,7 @@ function startLevel1() {
 
 	const hitSound = new Audio("assets/sounds/hit_block.mp3");
 	hitSound.volume = 0.3;
-	const bgm = new Audio("assets/sounds/bgm.mp3");
+	const bgm = new Audio("assets/sounds/bgm1.mp3");
 	bgm.loop = true;
 	bgm.volume = 0.3;
 	bgm.play();
@@ -23,7 +23,7 @@ function startLevel1() {
 	if (typeof window.score !== "number") {
 		window.score = 0;
 	}
-	window.remainingTime = 120;
+	window.remainingTime = window.gameSettings.gameTime;
 	window.animationId = null;
 	window.timerId = null;
 	window.isPaused = false;
@@ -35,7 +35,7 @@ function startLevel1() {
 	const paddle = {
 		x: canvas.width / 2 - 100,
 		y: canvas.height - 30,
-		width: 200,
+		width: window.gameSettings.paddleWidth,
 		height: 15,
 		speed: 7,
 	};
@@ -44,18 +44,18 @@ function startLevel1() {
 		x: canvas.width / 2,
 		y: canvas.height - 100, // 아래에서 시작
 		radius: 10,
-		speed: 3,
+		speed: 4,
 		dx: 0,
-		dy: -3, // 위로 발사
+		dy: -4, // 위로 발사
 	}, ];
 
 	let ballSizeLevel = 0; // 공 크기 파워업 레벨
 
-	const brickRowCount = 4;
+	const brickRowCount = 5;
 	const brickColumnCount = 10;
 	const brickWidth = 100;
 	const brickHeight = 50;
-	const brickPadding = 10;
+	const brickPadding = 0;
 	const brickOffsetTop = 50;
 	const brickOffsetLeft = 60;
 
@@ -107,7 +107,24 @@ function startLevel1() {
 	}
 
 	function drawScore() {
-		document.getElementById("score").textContent = window.score;
+		const infoBarHeight = 40; // 상단 정보 바의 높이
+
+		// 1. 검은색 배경 바 그리기
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // 반투명 검정
+		ctx.fillRect(0, 0, canvas.width, infoBarHeight);
+
+		// 2. 텍스트 스타일 설정
+		ctx.font = '22px Arial';
+		ctx.fillStyle = 'white';
+		ctx.textBaseline = 'middle'; // 텍스트를 수직 중앙 정렬
+
+		// 3. 점수 표시 (왼쪽 정렬)
+		ctx.textAlign = 'left';
+		ctx.fillText(`Score: ${window.score}`, 20, infoBarHeight / 2);
+
+		// 4. 남은 시간 표시 (오른쪽 정렬)
+		ctx.textAlign = 'right';
+		ctx.fillText(`Time: ${window.remainingTime}`, canvas.width - 20, infoBarHeight / 2);
 	}
 
 	function drawParticles() {
@@ -119,7 +136,6 @@ function startLevel1() {
 		});
 	}
 
-	// *** [수정] 아이템을 이미지 대신 도형과 텍스트로 그리는 함수 ***
 	function drawItems() {
 		items.forEach(item => {
 			ctx.save(); // 현재 그리기 상태 저장
@@ -175,7 +191,7 @@ function startLevel1() {
 	}
 
 	function createItem(x, y) {
-		if (Math.random() < 0.2) { // 20% 확률
+		if (Math.random() < 0.25) {
 			const itemType = Math.random() < 0.5 ? 'multi-ball' : 'big-ball';
 			items.push({
 				x: x,
@@ -188,9 +204,7 @@ function startLevel1() {
 		}
 	}
 
-	// *** [수정] 아이템 획득 효과음 코드 제거 ***
 	function activatePowerUp(type) {
-		// itemSound.play(); // 효과음 재생 코드 제거
 		if (type === 'multi-ball') {
 			const angles = [Math.PI / 6, Math.PI / 2, 5 * Math.PI / 6];
 			const newBallSpeed = 4;
@@ -266,12 +280,8 @@ function startLevel1() {
 			ball.x += ball.dx;
 			ball.y += ball.dy;
 
-			if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
-				ball.dx *= -1;
-			}
-			if (ball.y - ball.radius < 0) {
-				ball.dy *= -1;
-			}
+			if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) ball.dx *= -1;
+			if (ball.y - ball.radius < 0) ball.dy *= -1;
 
 			if (ball.y + ball.radius > canvas.height) {
 				balls.splice(i, 1);
@@ -352,9 +362,9 @@ function startLevel1() {
 		const scoreValue = document.getElementById("score-value");
 		const btnMain = document.getElementById("btn-to-main");
 		const btnAction = document.getElementById("btn-next-or-retry");
-		title.textContent = success ? "🎉 스테이지 클리어!" : "💥 게임 오버!";
+		title.textContent = success ? "굴착 성공!" : "실패..";
 		scoreValue.textContent = finalScore;
-		btnAction.textContent = success ? "다음 스테이지" : "다시 플레이";
+		btnAction.textContent = success ? "더 깊이 내려가기" : "다시 파기";
 		btnMain.onclick = () => {
 			modal.classList.add("hidden");
 			window.location.reload();
@@ -365,7 +375,7 @@ function startLevel1() {
 				startStory(currentLevel + 1);
 			} else {
 				window.score = 0;
-				startLevel1();
+				startLevel(currentLevel);
 			}
 		};
 		modal.classList.remove("hidden");
@@ -374,9 +384,8 @@ function startLevel1() {
 	// --- 타이머 ---
 	timerId = setInterval(() => {
 		if (isGameOver) return;
-		remainingTime--;
-		document.getElementById("time").textContent = remainingTime;
-		if (remainingTime <= 0) {
+		window.remainingTime--;
+		if (window.remainingTime <= 0) {
 			gameOver(false);
 		}
 	}, 1000);

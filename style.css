@@ -49,14 +49,16 @@ button {
 	font-weight: bold;
 	border: none;
 	border-radius: 8px;
-	background-color: #3b82f6;
+	/*background-color: #3b82f6;*/
+	background-color: brown;
 	color: white;
 	cursor: pointer;
 	transition: background-color 0.2s;
 }
 
 button:hover {
-	background-color: #2563eb;
+	/*background-color: #2563eb;*/
+	background-color: red;
 }
 
 /* 메인 메뉴 버튼 세로 정렬 및 크기 통일 */
