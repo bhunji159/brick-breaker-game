@@ -18,14 +18,15 @@ musicSelect.addEventListener("change", () => {
 	console.log("선택된 BGM:", window.currentMusic);
 });
 
-const startButton = document.getElementById("start-button");
+//const startButton = document.getElementById("start-button");
+const stageButton = document.getElementById("stage-button");
 const settingsButton = document.getElementById("settings-button");
 
-// const stageButton = document.getElementById("stage-button");
+
 // const exitButton = document.getElementById("exit-button");
 
 // 뒤로가기 
-const senarioBackArrow = document.getElementById("senario-back-arrow");
+//const senarioBackArrow = document.getElementById("senario-back-arrow");
 const stageBackArrow = document.getElementById("stage-back-arrow");
 const settingBackArrow = document.getElementById("settings-back-arrow");
 
@@ -64,7 +65,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		startStory(1);
 	});
 
-	startButton.addEventListener("click", function () {
+	// startButton.addEventListener("click", function () {
+	// 	mainMenu.classList.add("hidden");
+	// 	stageMenu.classList.remove("hidden");
+	// });
+
+    stageButton.addEventListener("click", function () {
 		mainMenu.classList.add("hidden");
 		stageMenu.classList.remove("hidden");
 	});
@@ -91,10 +97,11 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(`제한 시간 변경: ${window.gameSettings.gameTime}`);
     });
 
-	senarioBackArrow.addEventListener("click", function () {
-		storyMenu.classList.add("hidden");
-		mainMenu.classList.remove("hidden");
-	});
+    // 뒤로 가기 버튼
+	// senarioBackArrow.addEventListener("click", function () {
+	// 	storyMenu.classList.add("hidden");
+	// 	mainMenu.classList.remove("hidden");
+	// });
 
 	stageBackArrow.addEventListener("click", function () {
 		stageMenu.classList.add("hidden");
