@@ -153,6 +153,7 @@ const ScenarioManager = {
     bgm: null,
     skipButton: null,
     nextButton: null,
+    startButton: null,
     canvas: null,
     ctx: null,
     textContainer: null,
@@ -249,7 +250,8 @@ async function runDialogue(dialogueIndex) {
     }
 
     await loadScenarioAssets(dialogue);
-    
+
+    hideStartButton();
     hideNextButton();
     showSkipButton();
     
@@ -259,7 +261,8 @@ async function runDialogue(dialogueIndex) {
     if (dialogue.end !== 1) {
         showNextButton();
     } else {
-        showSkipButton();
+        hideSkipButton();
+        showStartButton();
     }
 }
 
@@ -272,6 +275,7 @@ function endCurrentScenario() {
     
     hideSkipButton();
     hideNextButton();
+    hideStartButton();
     
     // 시나리오 5(엔딩)일 경우, 페이드 아웃 효과를 실행합니다.
     if (ScenarioManager.currentScenarioNumber == 5) {
@@ -358,10 +362,24 @@ function hideNextButton() {
     }
 }
 
+function showStartButton() {
+    if (!ScenarioManager.startButton) {
+        ScenarioManager.startButton = createStartButton();
+        document.body.appendChild(ScenarioManager.startButton);
+    }
+    ScenarioManager.startButton.style.display = 'block';
+}
+
+function hideStartButton() {
+    if (ScenarioManager.startButton) {
+        ScenarioManager.startButton.style.display = 'none';
+    }
+}
+
 
 function createSkipButton() {
     const button = document.createElement('button');
-    button.textContent = '탐사 시작';
+    button.textContent = '스킵';
     button.style.cssText = `
         position: fixed; top: 20px; right: 20px; padding: 10px 20px;
         background: rgba(0,0,0,0.7); color: white; border: none;
@@ -384,6 +402,21 @@ function createNextButton() {
     `;
     button.addEventListener('click', () => {
         runDialogue(ScenarioManager.currentDialogueIndex + 1);
+    });
+    return button;
+}
+
+function createStartButton() {
+    const button = document.createElement('button');
+    button.textContent = '다음 장으로';
+    button.style.cssText = `
+        position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;
+        background: rgba(0,0,0,0.7); color: white; border: none;
+        border-radius: 5px; cursor: pointer; z-index: 1000; font-family: 'Arial', sans-serif;
+    `;
+    button.addEventListener('click', () => {
+        skipTyping();
+        endCurrentScenario();
     });
     return button;
 }
