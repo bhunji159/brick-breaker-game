@@ -11,9 +11,7 @@ function startLevel4() {
 
 	const hitSound = new Audio("assets/sounds/hit_block.mp3");
 	hitSound.volume = 0.4;
-	const bossHitSound = new Audio("assets/sounds/hit_boss.mp3");
-	bossHitSound.volume = 0.6;
-	const bgm = new Audio("assets/sounds/bgm.mp3");
+	const bgm = new Audio("assets/sounds/bgm4.mp3");
 	bgm.loop = true;
 	bgm.volume = 0.3;
 	bgm.play();
@@ -23,8 +21,10 @@ function startLevel4() {
 	// --- 게임 환경 설정 ---
 	const ctx = canvas.getContext("2d");
 	window.isGameOver = false;
-	if (typeof window.score !== "number") window.score = 0;
-	window.remainingTime = 180;
+	if (typeof window.score !== "number") {
+		window.score = 0;
+	}
+	window.remainingTime = window.gameSettings.gameTime;
 	window.animationId = null;
 	window.timerId = null;
 	window.isPaused = false;
@@ -37,7 +37,7 @@ function startLevel4() {
 	const paddle = {
 		x: canvas.width / 2 - 100,
 		y: canvas.height - 30,
-		width: 200,
+		width: window.gameSettings.paddleWidth,
 		height: 15,
 		speed: 7,
 	};
@@ -46,9 +46,9 @@ function startLevel4() {
 		x: canvas.width / 2,
 		y: canvas.height - 100,
 		radius: 10,
-		speed: 3,
+		speed: 4,
 		dx: 0,
-		dy: -3,
+		dy: -4,
 	}, ];
 
 	let ballSizeLevel = 0;
@@ -56,17 +56,17 @@ function startLevel4() {
 	const bossBrick = {
 		width: 400,
 		height: 300,
-		x: canvas.width / 2 - 150,
-		y: 100,
-		maxHits: 20,
-		hitsRemaining: 20,
+		x: canvas.width  / 2 - 200,
+		y: 10,
+		maxHits: 40,
+		hitsRemaining: 40,
 		visible: true,
 	};
 
 	window.bricks = [];
 	const bricks = window.bricks;
 	const brickWidth = 80;
-	const brickHeight = 30;
+	const brickHeight = 40;
 
 	// --- 이벤트 리스너 ---
 	canvas.addEventListener("mousemove", (e) => {
@@ -100,7 +100,24 @@ function startLevel4() {
 	}
 
 	function drawScore() {
-		document.getElementById("score").textContent = window.score;
+		const infoBarHeight = 40; // 상단 정보 바의 높이
+
+		// 1. 검은색 배경 바 그리기
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // 반투명 검정
+		ctx.fillRect(0, 0, canvas.width, infoBarHeight);
+
+		// 2. 텍스트 스타일 설정
+		ctx.font = '22px Arial';
+		ctx.fillStyle = 'white';
+		ctx.textBaseline = 'middle'; // 텍스트를 수직 중앙 정렬
+
+		// 3. 점수 표시 (왼쪽 정렬)
+		ctx.textAlign = 'left';
+		ctx.fillText(`Score: ${window.score}`, 20, infoBarHeight / 2);
+
+		// 4. 남은 시간 표시 (오른쪽 정렬)
+		ctx.textAlign = 'right';
+		ctx.fillText(`Time: ${window.remainingTime}`, canvas.width - 20, infoBarHeight / 2);
 	}
 
 	function drawParticles() {
@@ -143,7 +160,7 @@ function startLevel4() {
 			ctx.font = 'bold 30px Arial';
 			ctx.textAlign = 'center';
 			ctx.textBaseline = 'middle';
-			ctx.fillText(bossBrick.hitsRemaining, bossBrick.x + bossBrick.width / 2, bossBrick.y + bossBrick.height / 2);
+			//ctx.fillText(bossBrick.hitsRemaining, bossBrick.x + bossBrick.width / 2, bossBrick.y + bossBrick.height / 2);
 		}
 	}
 
@@ -174,7 +191,7 @@ function startLevel4() {
 	}
 
 	function createItem(x, y) {
-		if (Math.random() < 0.25) {
+		if (Math.random() < 0.2) {
 			const itemType = Math.random() < 0.5 ? 'multi-ball' : 'big-ball';
 			items.push({ x, y, width: 35, height: 35, speed: 2, type: itemType });
 		}
@@ -183,7 +200,7 @@ function startLevel4() {
 	function activatePowerUp(type) {
 		if (type === 'multi-ball') {
 			const angles = [Math.PI / 6, Math.PI / 2, 5 * Math.PI / 6];
-			const newBallSpeed = 6;
+			const newBallSpeed = 4;
 			angles.forEach(angle => {
 				balls.push({
 					x: paddle.x + paddle.width / 2,
@@ -206,15 +223,27 @@ function startLevel4() {
 	function spawnBricks() {
 		if (isGameOver || !bossBrick.visible) return;
 
-		const spawnCount = 4;
+		bricks.length = 0;
+
+		const spawnCount = 8;
 		const brickGap = 30; // 세로 간격 조정
 
 		// 1. 왼쪽 라인 (세로로 생성)
 		const leftX = bossBrick.x - brickWidth - 40; // 보스와의 간격
-		const verticalStartY = bossBrick.y + (bossBrick.height / 2) - ((spawnCount * brickHeight) + ((spawnCount - 1) * brickGap)) / 2;
-		for (let i = 0; i < spawnCount; i++) {
+		const verticalStartY = bossBrick.y;
+		for (let i = 0; i < spawnCount/2; i++) {
 			bricks.push({
 				x: leftX,
+				y: verticalStartY + i * (brickHeight + brickGap),
+				width: brickWidth,
+				height: brickHeight,
+				visible: true
+			});
+		}
+
+		for (let i = 0; i < spawnCount/2; i++) {
+			bricks.push({
+				x: leftX - brickWidth - 20 ,
 				y: verticalStartY + i * (brickHeight + brickGap),
 				width: brickWidth,
 				height: brickHeight,
@@ -224,9 +253,19 @@ function startLevel4() {
 		
 		// 2. 오른쪽 라인 (세로로 생성)
 		const rightX = bossBrick.x + bossBrick.width + 40; // 보스와의 간격
-		for (let i = 0; i < spawnCount; i++) {
+		for (let i = 0; i < spawnCount/2; i++) {
 			bricks.push({
 				x: rightX,
+				y: verticalStartY + i * (brickHeight + brickGap),
+				width: brickWidth,
+				height: brickHeight,
+				visible: true
+			});
+		}
+		
+		for (let i = 0; i < spawnCount/2; i++) {
+			bricks.push({
+				x: rightX + brickWidth + 20,
 				y: verticalStartY + i * (brickHeight + brickGap),
 				width: brickWidth,
 				height: brickHeight,
@@ -293,7 +332,11 @@ function startLevel4() {
 				continue;
 			}
 
-			if (ball.y + ball.radius > paddle.y && ball.y - ball.radius < paddle.y + paddle.height && ball.x + ball.radius > paddle.x && ball.x - ball.radius < paddle.x + paddle.width) {
+			if (ball.y + ball.radius > paddle.y &&
+				ball.y - ball.radius < paddle.y + paddle.height &&
+				ball.x + ball.radius > paddle.x &&
+				ball.x - ball.radius < paddle.x + paddle.width
+			) {
 				ball.dy *= -1;
 				ball.y = paddle.y - ball.radius;
 				let collidePoint = ball.x - (paddle.x + paddle.width / 2);
@@ -308,8 +351,8 @@ function startLevel4() {
 				handleCollision(ball, bossBrick);
 				bossBrick.hitsRemaining--;
 				window.score += 50;
-				bossHitSound.currentTime = 0;
-				bossHitSound.play();
+				hitSound.currentTime = 0;
+				hitSound.play();
 				createParticles(ball.x, ball.y, 30);
 				if (bossBrick.hitsRemaining <= 0) {
 					bossBrick.visible = false;
@@ -376,9 +419,9 @@ function startLevel4() {
 		const scoreValue = document.getElementById("score-value");
 		const btnMain = document.getElementById("btn-to-main");
 		const btnAction = document.getElementById("btn-next-or-retry");
-		title.textContent = success ? "🎉 스테이지 클리어!" : "💥 게임 오버!";
+		title.textContent = success ? "탐사 완료!!!" : "실패...";
 		scoreValue.textContent = finalScore;
-		btnAction.textContent = success ? "다음 스테이지" : "다시 플레이";
+		btnAction.textContent = success ? "마무리" : "재도전";
 		btnMain.onclick = () => {
 			modal.classList.add("hidden");
 			window.location.reload();
@@ -398,12 +441,11 @@ function startLevel4() {
 	// --- 타이머 ---
 	timerId = setInterval(() => {
 		if (isGameOver) return;
-		remainingTime--;
-		document.getElementById("time").textContent = remainingTime;
-		if (remainingTime <= 0) gameOver(false);
+		window.remainingTime--;
+		if (window.remainingTime <= 0) gameOver(false);
 	}, 1000);
 
-	brickSpawnerId = setInterval(spawnBricks, 10000);
+	brickSpawnerId = setInterval(spawnBricks, 8000);
 
 	// --- 게임 시작 ---
 	update();

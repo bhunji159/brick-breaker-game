@@ -12,7 +12,7 @@ function startLevel2() {
 
 	const hitSound = new Audio("assets/sounds/hit_block.mp3");
 	hitSound.volume = 0.5;
-	const bgm = new Audio("assets/sounds/bgm.mp3");
+	const bgm = new Audio("assets/sounds/bgm2.mp3");
 	bgm.loop = true;
 	bgm.volume = 0.3;
 	bgm.play();
@@ -26,7 +26,7 @@ function startLevel2() {
 	if (typeof window.score !== "number") {
 		window.score = 0;
 	}
-	window.remainingTime = 120;
+	window.remainingTime = window.gameSettings.gameTime;
 	window.animationId = null;
 	window.timerId = null;
 	window.isPaused = false;
@@ -38,7 +38,7 @@ function startLevel2() {
 	const paddle = {
 		x: canvas.width / 2 - 100,
 		y: canvas.height - 30,
-		width: 200,
+		width: window.gameSettings.paddleWidth,
 		height: 15,
 		speed: 7,
 	};
@@ -47,18 +47,18 @@ function startLevel2() {
 		x: canvas.width / 2,
 		y: canvas.height - 100, // 아래에서 시작
 		radius: 10,
-		speed: 3,
+		speed: 4,
 		dx: 0,
-		dy: -3, // 위로 발사
+		dy: -4, // 위로 발사
 	}, ];
 
 	let ballSizeLevel = 0; // [추가] 공 크기 파워업 레벨
 
-	const brickRowCount = 3;
-	const brickColumnCount = 8;
+	const brickRowCount = 5;
+	const brickColumnCount = 9;
 	const brickWidth = 120;
-	const brickHeight = 50;
-	const brickPadding = 20;
+	const brickHeight = 60;
+	const brickPadding = 0;
 	const brickOffsetTop = 50;
 	const brickOffsetLeft = 60;
 
@@ -113,8 +113,25 @@ function startLevel2() {
 		});
 	}
 
-	function drawScore() {
-		document.getElementById("score").textContent = window.score;
+	function drawScore() {	
+		const infoBarHeight = 40; // 상단 정보 바의 높이
+
+		// 1. 검은색 배경 바 그리기
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'; // 반투명 검정
+		ctx.fillRect(0, 0, canvas.width, infoBarHeight);
+
+		// 2. 텍스트 스타일 설정
+		ctx.font = '22px Arial';
+		ctx.fillStyle = 'white';
+		ctx.textBaseline = 'middle'; // 텍스트를 수직 중앙 정렬
+
+		// 3. 점수 표시 (왼쪽 정렬)
+		ctx.textAlign = 'left';
+		ctx.fillText(`Score: ${window.score}`, 20, infoBarHeight / 2);
+
+		// 4. 남은 시간 표시 (오른쪽 정렬)
+		ctx.textAlign = 'right';
+		ctx.fillText(`Time: ${window.remainingTime}`, canvas.width - 20, infoBarHeight / 2);
 	}
 
 	function drawParticles() {
@@ -177,7 +194,7 @@ function startLevel2() {
 
 	// [추가] 아이템 생성 함수
 	function createItem(x, y) {
-		if (Math.random() < 0.25) { // 25% 확률로 아이템 생성
+		if (Math.random() < 0.40) { 
 			const itemType = Math.random() < 0.5 ? 'multi-ball' : 'big-ball';
 			items.push({
 				x,
@@ -346,16 +363,15 @@ function startLevel2() {
 	}
 
 	window.showResultModal = function (success, finalScore, currentLevel) {
-		// ... (기존 showResultModal 함수와 동일)
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		const modal = document.getElementById("result-modal");
 		const title = document.getElementById("result-title");
 		const scoreValue = document.getElementById("score-value");
 		const btnMain = document.getElementById("btn-to-main");
 		const btnAction = document.getElementById("btn-next-or-retry");
-		title.textContent = success ? "🎉 스테이지 클리어!" : "💥 게임 오버!";
+		title.textContent = success ? "굴착 성공!" : "실패..";
 		scoreValue.textContent = finalScore;
-		btnAction.textContent = success ? "다음 스테이지" : "다시 플레이";
+		btnAction.textContent = success ? "더 깊이 내려가기" : "다시 파기";
 		btnMain.onclick = () => {
 			modal.classList.add("hidden");
 			window.location.reload();
@@ -366,7 +382,7 @@ function startLevel2() {
 				startStory(currentLevel + 1);
 			} else {
 				window.score = 0;
-				startLevel(currentLevel); // startLevel2() 대신 범용 함수 호출
+				startLevel(currentLevel);
 			}
 		};
 		modal.classList.remove("hidden");
@@ -375,9 +391,8 @@ function startLevel2() {
 	// --- 타이머 ---
 	timerId = setInterval(() => {
 		if (isGameOver) return;
-		remainingTime--;
-		document.getElementById("time").textContent = remainingTime;
-		if (remainingTime <= 0) {
+		window.remainingTime--;
+		if (window.remainingTime <= 0) {
 			gameOver(false);
 		}
 	}, 1000);

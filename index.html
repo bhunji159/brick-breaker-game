@@ -18,17 +18,29 @@
 				<h1> 지구 땅굴 파기 대회</h1>
 				<button id="story-button">시나리오 모드</button>
 				<button id="stage-button">스테이지 선택</button>
-				<button id="start-button">게임 시작</button>
 				<button id="settings-button">설정</button>
 			</div>
 
-			<!-- 설정 메뉴 -->
+			<!-- [수정] 설정 메뉴 -->
 			<div id="settings-menu" class="menu hidden">
 				<h2>설정</h2>
-				<label
-					>배경 음악:
-					<input type="checkbox" id="music-toggle" checked />
-				</label>
+				<div class="setting-option">
+					<label for="paddle-width-select">패들 너비:</label>
+					<select id="paddle-width-select">
+						<option value="100">좁게</option>
+						<option value="200" selected>보통</option>
+						<option value="300">넓게</option>
+					</select>
+				</div>
+				<div class="setting-option">
+					<label for="game-time-select">제한 시간:</label>
+					<select id="game-time-select">
+						<option value="60">60초</option>
+						<option value="90" selected>90초</option>
+						<option value="120">120초</option>
+					</select>
+				</div>
+				<button id="back-to-main-button">메인으로 돌아가기</button>
 			</div>
 
 			<!-- 스테이지 선택 메뉴 -->
@@ -37,7 +49,7 @@
 				<button class="stage-select" data-stage="1">스테이지 1 - 지각</button>
 				<button class="stage-select" data-stage="2">스테이지 2 - 멘틀</button>
 				<button class="stage-select" data-stage="3">스테이지 3 - 외핵</button>
-				<button class="stage-select" data-stage="4">스테이지 4 - 내핵	</button>
+				<button class="stage-select" data-stage="4">스테이지 4 - 내핵</button>
 			</div>
 
 			<!-- 게임 결과 모달 -->

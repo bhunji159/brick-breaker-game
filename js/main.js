@@ -13,6 +13,16 @@ const stageButton = document.getElementById("stage-button");
 const settingsButton = document.getElementById("settings-button");
 const storyButton = document.getElementById("story-button");
 
+// [추가] 설정 메뉴 UI 요소
+const paddleWidthSelect = document.getElementById("paddle-width-select");
+const gameTimeSelect = document.getElementById("game-time-select");
+const backToMainButton = document.getElementById("back-to-main-button");
+
+window.gameSettings = {
+    paddleWidth: 200, // 기본값
+    gameTime: 90      // 기본값
+};
+
 // 캔버스를 표시하고 스타일 적용
 function activateGameCanvas() {
 	canvas.classList.remove("hidden");
@@ -22,10 +32,10 @@ function activateGameCanvas() {
 
 // 메인 버튼 이벤트 바인딩
 document.addEventListener("DOMContentLoaded", function () {
-	startButton.addEventListener("click", function () {
+	storyButton.addEventListener("click", function () {
 		mainMenu.classList.add("hidden");
 		activateGameCanvas();
-		startLevel(1); // 기본은 level 1부터 시작
+		startStory(1);
 	});
 
 	stageButton.addEventListener("click", function () {
@@ -33,16 +43,27 @@ document.addEventListener("DOMContentLoaded", function () {
 		stageMenu.classList.remove("hidden");
 	});
 
-	storyButton.addEventListener("click", function () {
-		mainMenu.classList.add("hidden");
-		activateGameCanvas();
-		startStory(1); // 시나리오 1번을 인자로 전달하여 시작
-	});
-
 	settingsButton.addEventListener("click", function () {
 		mainMenu.classList.add("hidden");
 		settingsMenu.classList.remove("hidden");
 	});
+
+    backToMainButton.addEventListener('click', () => {
+    settingsMenu.classList.add('hidden');
+    mainMenu.classList.remove('hidden');
+    });
+
+    // [추가] 패들 너비 설정 변경 시 gameSettings 객체 업데이트
+    paddleWidthSelect.addEventListener('change', (e) => {
+        window.gameSettings.paddleWidth = parseInt(e.target.value, 10);
+        console.log(`패들 너비 변경: ${window.gameSettings.paddleWidth}`);
+    });
+
+    // [추가] 제한 시간 설정 변경 시 gameSettings 객체 업데이트
+    gameTimeSelect.addEventListener('change', (e) => {
+        window.gameSettings.gameTime = parseInt(e.target.value, 10);
+        console.log(`제한 시간 변경: ${window.gameSettings.gameTime}`);
+    });
 
 	const stageButtons = document.querySelectorAll(".stage-select");
 	stageButtons.forEach((btn) => {
@@ -50,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			const level = parseInt(this.dataset.stage);
 			stageMenu.classList.add("hidden");
 			activateGameCanvas();
-			startStory(level); // 해당 레벨(시나리오)의 스토리를 시작
+			startStory(level);
 		});
 	});
 });
@@ -79,95 +100,54 @@ const ScenarioManager = {
     currentTextElement: null
 };
 
-// 원본 시나리오 데이터
+// 원본 시나리오 데이터 (제공된 내용과 동일)
 const scenarioData = [
-    {
-        scenario : 1, id: 1, end : 0, background: "assets/images/story/sc1/sc1.png", bgm: "assets/sounds/sc1.mp3",
-        message: "어느 먼 미래의 지구, 레이싱 도박에 빠져 있던 \n 어느 부자는 새로운 취미를 찾기 위해 \n 지구 땅굴 탐사 대회를 개최하기로 결정한다"
-    },
-    {
-        scenario : 1, id: 2, end : 0, background: "assets/images/story/sc1/sc2.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message: "지구를 탐사했다는 증거를 가져오는 연구팀에게는 그에 따른 포상을,\n 가장 먼저 내핵에 다녀온 연구팀에게는 막대한 우승 상금을 수여하는 이 대회는\n 세계 지질 연구자들에게 엄청난 관심을 얻었다."
-    },
-    {
-        scenario : 1, id : 3, end : 0, background: "assets/images/story/sc1/sc3.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "지구에 각종 현상을 측정하여 기록하던 어느 K 대학의 지질 연구팀은 \n최근 여태껏 보지 못한 값들이 꾸준히 측정되었지만 이를 확인할 방법이 없어 막막해왔다."
-    },
-    {
-        scenario : 1, id : 4, end : 0, background: "assets/images/story/sc1/sc4.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "이런 상황에서 지구 탐사 대회 소식은 그들에게 있어 \n두번 다시 오지 않을 마지막 기회였기에 \n연구팀은 고민의 시간도 없이 참가를 신청했다."
-    },
-    {
-        scenario : 1, id : 5, end : 1, background: "assets/images/story/sc1/sc5.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "부푼 기대를 품으며 한편으론 걱정도 많았던 연구팀은\n 우승 상금을 위해 누구보다 빨리 내핵 탐사를 끝내는 것을 목표로 탐사를 떠난다"
-    },
-    {
-        scenario : 2, id: 1, end : 0, background: "assets/images/story/sc2/sc1.png", bgm: "assets/sounds/sc2.mp3",
-        message: "얼마전 연구소 근처에서 발견한 수상한 공은 어째선지 손쉽게 땅을 파낼 수 있었고\n그 공의 위력에 연구 팀은 매우 놀라웠다"
-    },
-    {
-        scenario : 2, id: 2, end : 0, background: "assets/images/story/sc2/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message: "연구팀은 이 공의 위력을 잊지 않고 이번 탐사때 들고 내려와\n 아주 손쉽게 남들보다 빨리 땅을 파내며 내려올 수 있었다"
-    },
-    {
-        scenario : 2, id : 3, end : 1, background: "assets/images/story/sc2/sc3.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "탐사할 때 같이 들고온 측정기는 점점 깊이 내려갈 수록 \n요동 치는 정도가 점점 심해지고 있었고 연구팀에 얼굴엔 긴장한 표정이 가득이었다."
-    },
-    {
-        scenario : 2, id : 4, end : 1, background: "assets/images/story/sc2/sc3.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "돈을 바라보며 시작한 탐사였지만\n 이 이상 현상의 원인이 무엇인지 더욱 궁금증이 늘어났기에\n 맨틀층을 파내기 준비하는 연구팀이었다."
-    },
-    {
-        scenario : 3, id: 1, end : 0, background: "assets/images/story/sc3/sc1.png", bgm: "assets/sounds/sc3.mp3",
-        message: "맨틀층을 지나 외핵층에 도달했을땐 측정기가 출력하는 값은 해석할 수 없을 정도로 이상 현상의 영향력이 커졌다"
-    },
-    {
-        scenario : 3, id: 2, end : 0, background: "assets/images/story/sc3/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message: "측정기가 동작하는 것 조차 간신히인 상태에서\n 연구팀은 궁금증을 넘어 두려움이 느껴질 정도로 이상함을 느꼈다"
-    },
-    {
-        scenario : 3, id : 3, end : 1, background: "assets/images/story/sc3/sc2.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "측정기 상태 만큼 외핵의 상태도 만만치 않았는데\n기존에 알고 있던 외핵층의 액체 상태 뿐만 아니라\n 광물이라 할 것들이 눈 앞에 둥둥 떠다니고 있었다." 
-    },
-    {
-        scenario : 3, id : 4, end : 1, background: "assets/images/story/sc3/sc2.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "거기에 더해 기묘한 느낌까지 들고 있었기에\n지금이라도 돌아갈까란 공포가 들었지만\n이에 마음을 다잡으며 다시 전진하는 연구팀이었다." 
-    },
-    {
-        scenario : 4, id: 1, end : 0, background: "assets/images/story/sc4/sc1.png", bgm: "assets/sounds/sc4.mp3",
-        message: "내핵에 도착하며 측정기는 더욱더 요란을 떨기 시작했고 곧이어 이 사태의 원인을 확인할 수 있었다."
-    },
-    {
-        scenario : 4, id: 2, end : 0, background: "assets/images/story/sc4/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message: "지구 최심부에는 있을리가 없는 의문의 돌덩이가 둥둥 떠다니고 있었다."
-    },
-    {
-        scenario : 4, id : 3, end : 0, background: "assets/images/story/sc4/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "돌덩이에서부터 온갖 에너지파와 신호들이 방출되고 있었으며\n연구팀은 이 돌덩이의 존재가 곧 이상 현상의 원인이라는 것을 알 수 있었다"
-    },
-    {
-        scenario : 4, id : 4, end : 1, background: "assets/images/story/sc4/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "상금을 위해서도, 그리고 지구의 안정을 위해서도\n하루 빨리 돌덩이를 부순 다음\n지상으로 돌아가 이번 탐사를 끝내기 위해 결의를 다졌다."
-    },
-    {
-        scenario : 5, id: 1, end : 0, background: "assets/images/story/ending/sc1.png", bgm: "assets/sounds/ending.mp3",
-        message: "긴 사투 끝에 연구팀은 돌덩이를 산산조각내는데 성공하였다"
-    },
-    {
-        scenario : 5, id: 2, end : 0, background: "assets/images/story/ending/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message: "계속 느껴졌던 기묘한 느낌도 사라지고 측정기도 곧 안정화된 값을 측정하기 시작하였다"
-    },
-    {
-        scenario : 5, id : 3, end : 0, background: "assets/images/story/ending/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
-        message : "이제 여태 지하를 파고 내려오며 챙긴 여러 채집물들과 연구 자료와 함께\n지상으로 돌아가 대회 상금을 타고 앞으로도 계속 지구를 위한 연구를 이어나가는 일 만이 남았다."
-    }
+    { scenario : 1, id: 1, end : 0, background: "assets/images/story/sc1/sc1.png", bgm: "assets/sounds/sc1.mp3",
+        message: "어느 먼 미래의 지구, 레이싱 도박에 빠져 있던 \n 어느 부자는 새로운 취미를 찾기 위해 \n 지구 땅굴 탐사 대회를 개최하기로 결정한다" },
+    { scenario : 1, id: 2, end : 0, background: "assets/images/story/sc1/sc2.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message: "지구를 탐사했다는 증거를 가져오는 연구팀에게는 그에 따른 포상을,\n 가장 먼저 내핵에 다녀온 연구팀에게는 막대한 우승 상금을 수여하는 이 대회는\n 세계 지질 연구자들에게 엄청난 관심을 얻었다." },
+    { scenario : 1, id : 3, end : 0, background: "assets/images/story/sc1/sc3.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "지구에 각종 현상을 측정하여 기록하던 어느 K 대학의 지질 연구팀은 \n최근 여태껏 보지 못한 값들이 꾸준히 측정되었지만 이를 확인할 방법이 없어 막막해왔다." },
+    { scenario : 1, id : 4, end : 0, background: "assets/images/story/sc1/sc4.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "이런 상황에서 지구 탐사 대회 소식은 그들에게 있어 \n두번 다시 오지 않을 마지막 기회였기에 \n연구팀은 고민의 시간도 없이 참가를 신청했다." },
+    { scenario : 1, id : 5, end : 1, background: "assets/images/story/sc1/sc5.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "부푼 기대를 품으며 한편으론 걱정도 많았던 연구팀은\n 우승 상금을 위해 누구보다 빨리 내핵 탐사를 끝내는 것을 목표로 탐사를 떠난다" },
+    { scenario : 2, id: 1, end : 0, background: "assets/images/story/sc2/sc1.png", bgm: "assets/sounds/sc2.mp3",
+        message: "단순히 공을 튀기며 땅을 파내려 간다는 것은\n믿을 수 없을 정도로 놀라운 성능을 보여줬다" },
+    { scenario : 2, id: 2, end : 0, background: "assets/images/story/sc2/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message: "얼마전 연구소 근처에서 발견한 이 공은\n어디서 왔는지도 어떤 물질로 되있는지도 모르겠지만\n땅을 잘판다는 결과만은 잘 보여주었다" },
+    { scenario : 2, id : 3, end : 0, background: "assets/images/story/sc2/sc3.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "탐사할 때 같이 들고온 측정기는 점점 깊이 내려갈 수록 \n측정 값이 요동 치는 정도가 점점 심해지고 있었고\n연구팀은 아직까지도 원인이 무엇인지 알 수 없었다." },
+    { scenario : 2, id : 4, end : 1, background: "assets/images/story/sc2/sc3.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "이 이상 현상의 원인이 무엇인지 더욱 궁금증이 늘어났기에\n 하루 빨리 가장 아래까지 탐사를 마치고\n집에 돌아가고 싶은 연구팀은 더 깊은 곳으로 내려가기 위해 다시 공을 던졌다." },
+    { scenario : 3, id: 1, end : 0, background: "assets/images/story/sc3/sc1.png", bgm: "assets/sounds/sc3.mp3", 
+        message: "더 깊이 내려와 외핵층 무렵까지 도착했을 땐\n 더이상 측정기가 무언가를 측정한다고 볼 수 없을 정도로\n 이상한 값만을 출력하고 있었다." },
+    { scenario : 3, id: 2, end : 0, background: "assets/images/story/sc3/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message: "측정기가 전원이 켜진다는 것만이 간신히인 상태에서\n 연구팀은 궁금증을 넘어 두려움이 느껴질 정도로 이상함을 느꼈다" },
+    { scenario : 3, id : 3, end : 0, background: "assets/images/story/sc3/sc2.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "창 밖을 바라봐도 외핵의 상태도 무언가 기묘했다." },
+    { scenario : 3, id : 4, end : 0, background: "assets/images/story/sc3/sc2.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "외핵층의 액체 상태를 이용하여 아니라\n묘한 광물들이 눈 앞에 둥둥 떠다니고 있었기 때문이다." },
+    { scenario : 3, id : 5, end : 1, background: "assets/images/story/sc3/sc2.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "이런 해석할 수 없는 상황은 연구팀에게\n지금이라도 돌아갈까란 공포를 보다도\n일을 해결하고 싶다는 의지만을 북돋아줄 뿐이었다." },
+    { scenario : 4, id: 1, end : 0, background: "assets/images/story/sc4/sc1.png", bgm: "assets/sounds/sc4.mp3",
+        message: "가장 깊은 곳이라고 생각되는 곳에 도착했을 땐 \n 눈 앞엔 의문의 돌덩이가 둥둥떠다니고 있었다." },
+    { scenario : 4, id: 2, end : 0, background: "assets/images/story/sc4/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message: "돌덩이에서부터 온갖 에너지파와 신호들이 방출되고 있는 듯 보였으며\n이를 증명하듯 측정기가 여태껏과 비교할 수 없을 정도로 날뛰었다." },
+    { scenario : 4, id : 3, end : 0, background: "assets/images/story/sc4/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "연구팀은 이 돌덩이의 존재가 곧 이상 현상의 원인이라는 것을 직감적으로 파악할 수 있었고\n금방 자신들이 해야할 일을 알 수 있었다."},
+    { scenario : 4, id : 4, end : 1, background: "assets/images/story/sc4/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "이 돌덩이를 부수는 것이 자신들의 목표이며\n 지금 마지막 발굴을 위해 이윽고 공을 다시 던진다" },
+    { scenario : 5, id: 1, end : 0, background: "assets/images/story/ending/sc1.png", bgm: "assets/sounds/ending.mp3",
+        message: "긴 사투 끝에 연구팀은 돌덩이를 산산조각내는데 성공하였다" },
+    { scenario : 5, id: 2, end : 0, background: "assets/images/story/ending/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message: "계속 느껴졌던 기묘한 느낌도 사라지고 측정기도 곧 안정화된 값을 측정하기 시작하였다" },
+    { scenario : 5, id : 3, end : 0, background: "assets/images/story/ending/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "짧은 듯 하면서도 길게 느껴진 이번 탐사는\n연구팀에게 적잖은 연구 성과와 결과물을 남겨주었다." },
+    { scenario : 5, id : 4, end : 1, background: "assets/images/story/ending/sc1.png", bgm: "assets/sounds/05. INTRUSION.mp3",
+        message : "돌덩이를 부수며 지구에 안정도 가져오고\n누구보다도 빨리 최심층에 도착한 연구팀은\n이제 지상으로 올라가 대회 상금을 받는 것 만이 남았을 뿐이다." }
 ];
 
-// [수정] BGM 재생 로직을 startStory 함수로 이동
-/**
- * 특정 번호의 시나리오를 시작하는 진입점 함수.
- * @param {number} scenarioNumber - 시작할 시나리오의 번호.
- */
 function startStory(scenarioNumber) {
     ScenarioManager.canvas = canvas;
     ScenarioManager.ctx = ctx;
@@ -182,26 +162,19 @@ function startStory(scenarioNumber) {
         return;
     }
 
-    // --- [추가] BGM 재생 로직 ---
-    // 기존에 재생되던 BGM이 있다면 정지
     if (ScenarioManager.bgm) {
         ScenarioManager.bgm.pause();
     }
     
-    // 시나리오의 첫 번째 대사 BGM을 해당 시나리오의 대표 BGM으로 설정하고 재생
     const firstDialogue = ScenarioManager.currentScenarioData[0];
     ScenarioManager.bgm = new Audio(firstDialogue.bgm);
     ScenarioManager.bgm.loop = true;
     ScenarioManager.bgm.volume = 0.3;
     ScenarioManager.bgm.play().catch(e => console.error("BGM 재생 오류:", e));
-    // --- BGM 로직 끝 ---
     
     runDialogue(0);
 }
 
-/**
- * 현재 시나리오 내에서 특정 인덱스의 대사를 실행합니다.
- */
 async function runDialogue(dialogueIndex) {
     if (ScenarioManager.textContainer) {
         ScenarioManager.textContainer.innerHTML = '';
@@ -215,8 +188,7 @@ async function runDialogue(dialogueIndex) {
         endCurrentScenario();
         return;
     }
-    
-    // [수정] 이제 배경 이미지 로딩만 담당
+
     await loadScenarioAssets(dialogue);
     
     hideNextButton();
@@ -228,13 +200,11 @@ async function runDialogue(dialogueIndex) {
     if (dialogue.end !== 1) {
         showNextButton();
     } else {
-        setTimeout(endCurrentScenario, 1500); 
+        showSkipButton();
     }
 }
 
-/**
- * 현재 진행 중인 시나리오를 종료하고, 해당 레벨을 시작합니다.
- */
+// [핵심 변경] endCurrentScenario 함수 수정
 function endCurrentScenario() {
     if (ScenarioManager.bgm) {
         ScenarioManager.bgm.pause();
@@ -243,17 +213,51 @@ function endCurrentScenario() {
     
     hideSkipButton();
     hideNextButton();
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    // 시나리오 5(엔딩)일 경우, 페이드 아웃 효과를 실행합니다.
+    if (ScenarioManager.currentScenarioNumber == 5) {
+        console.log(`시나리오 5 완료. 메인 메뉴로 페이드 아웃합니다.`);
+        fadeOutToMainMenu(); // 기존 returnToMainMenu() 대신 호출
+        return;
+    }
+    
+    // 그 외 시나리오는 캔버스를 즉시 비우고 다음 레벨을 시작합니다.
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     console.log(`시나리오 ${ScenarioManager.currentScenarioNumber} 완료. 레벨을 시작합니다.`);
     startLevel(ScenarioManager.currentScenarioNumber);
 }
 
-// [수정] BGM 관련 코드를 제거하고 배경 이미지 로드 기능만 남김
-/**
- * 시나리오에 필요한 배경 이미지를 로드하고 설정합니다.
- * @param {object} dialogue - 현재 대사 정보 객체
- */
+// [추가] 페이드 아웃 효과를 위한 함수
+function fadeOutToMainMenu() {
+    const duration = 3000;
+    let startTime = null;
+
+    function fadeStep(timestamp) {
+        if (!startTime) {
+            startTime = timestamp;
+        }
+
+        const elapsedTime = timestamp - startTime;
+        let alpha = elapsedTime / duration;
+        alpha = Math.min(alpha, 1); // alpha 값이 1을 넘지 않도록 함
+
+        // 캔버스 위에 점점 진해지는 검은색 사각형을 그림
+        ctx.fillStyle = `rgba(0, 0, 0, ${alpha})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (elapsedTime < duration) {
+            // 아직 5초가 안 지났으면 다음 프레임 요청
+            requestAnimationFrame(fadeStep);
+        } else {
+            // 5초가 지나면 메인 메뉴로 돌아감
+            returnToMainMenu();
+        }
+    }
+
+    // 페이드 아웃 애니메이션 시작
+    requestAnimationFrame(fadeStep);
+}
+
 function loadScenarioAssets(dialogue) {
     return new Promise((resolve) => {
         const bgImage = new Image();
@@ -266,7 +270,7 @@ function loadScenarioAssets(dialogue) {
     });
 }
 
-// UI 버튼 생성 및 제어 함수 (이하 변경 없음)
+
 function showSkipButton() {
     if (!ScenarioManager.skipButton) {
         ScenarioManager.skipButton = createSkipButton();
@@ -295,28 +299,19 @@ function hideNextButton() {
     }
 }
 
+
 function createSkipButton() {
     const button = document.createElement('button');
-    button.textContent = '스킵';
+    button.textContent = '탐사 시작';
     button.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        background: rgba(0,0,0,0.7);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        z-index: 1000;
-        font-family: 'Arial', sans-serif;
+        position: fixed; top: 20px; right: 20px; padding: 10px 20px;
+        background: rgba(0,0,0,0.7); color: white; border: none;
+        border-radius: 5px; cursor: pointer; z-index: 1000; font-family: 'Arial', sans-serif;
     `;
-    
     button.addEventListener('click', () => {
         skipTyping();
         endCurrentScenario();
     });
-    
     return button;
 }
 
@@ -324,27 +319,16 @@ function createNextButton() {
     const button = document.createElement('button');
     button.textContent = '다음';
     button.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        background: rgba(0,100,200,0.8);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        z-index: 1000;
-        font-family: 'Arial', sans-serif;
+        position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;
+        background: rgba(0,100,200,0.8); color: white; border: none;
+        border-radius: 5px; cursor: pointer; z-index: 1000; font-family: 'Arial', sans-serif;
     `;
-    
     button.addEventListener('click', () => {
         runDialogue(ScenarioManager.currentDialogueIndex + 1);
     });
-    
     return button;
 }
 
-// 타이핑 효과 관련 함수
 function skipTyping() {
     if (ScenarioManager.typingTimer) {
         clearTimeout(ScenarioManager.typingTimer);
@@ -371,11 +355,9 @@ function createTypewriterEffect(element, text, speed = 60) {
             }
             
             const currentTypedText = text.substring(0, typingIndex + 1).replace(/\\n/g, '\n');
-            
             element.ctx.clearRect(element.boxX, element.boxY, element.boxWidth, element.boxHeight);
             element.ctx.fillStyle = "rgba(60, 60, 60, 0.3)";
             element.ctx.fillRect(element.boxX, element.boxY, element.boxWidth, element.boxHeight);
-            
             drawMultilineText(element.ctx, currentTypedText, element.x, element.y, 24);
             
             typingIndex++;
@@ -399,28 +381,25 @@ function drawMultilineText(ctx, text, x, y, lineHeight) {
 
 function createTextElement() {
     const ctx = ScenarioManager.ctx;
-    
     const boxWidth = canvas.width;
     const boxHeight = canvas.height / 4;
     const boxX = 0;
     const boxY = canvas.height - boxHeight;
-
     ctx.font = '24px Arial';
     ctx.fillStyle = "#ffffff";
     ctx.textBaseline = "middle";
     ctx.textAlign = "center";
-    
     const textX = canvas.width / 2;
     const textY = boxY + boxHeight / 2;
-    
-    return {
-        ctx: ctx,
-        x: textX,
-        y: textY,
-        boxX: boxX,
-        boxY: boxY,
-        boxWidth: boxWidth,
-        boxHeight: boxHeight
-    };
+    return { ctx: ctx, x: textX, y: textY, boxX: boxX, boxY: boxY, boxWidth: boxWidth, boxHeight: boxHeight };
 }
 
+function returnToMainMenu() {
+    // 게임 캔버스 숨기기
+    canvas.classList.add("hidden");
+    // 메인 메뉴 보이기
+    mainMenu.classList.remove("hidden");
+    // body의 배경을 메인 이미지로 확실하게 변경
+    document.body.style.background = 'url("assets/images/clearBG.png") no-repeat center center fixed';
+    document.body.style.backgroundSize = 'cover';
+}
