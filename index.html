@@ -5,7 +5,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>지구 땅굴 파기 대회</title>
 		<link rel="stylesheet" href="style.css" />
-
 	</head>
 	<body>
 		<!-- 게임 캔버스 -->
@@ -15,7 +14,7 @@
 		<div id="ui">
 			<!-- 메인 메뉴 -->
 			<div id="main-menu" class="menu">
-				<h1> 지구 땅굴 파기 대회</h1>
+				<h1>지구 땅굴 파기 대회</h1>
 				<button id="story-button">시나리오 모드</button>
 				<button id="stage-button">스테이지 선택</button>
 				<button id="settings-button">설정</button>
@@ -46,8 +45,12 @@
 			<!-- 게임 시작 -> 스테이지 선택 메뉴 -->
 			<div id="stage-menu" class="menu hidden">
 				<div class="header-row">
-					<img id="stage-back-arrow" class="back-arrow" 
-					src="assets/images/arrow_back.png" alt="뒤로가기" />
+					<img
+						id="stage-back-arrow"
+						class="back-arrow"
+						src="assets/images/arrow_back.png"
+						alt="뒤로가기"
+					/>
 					<h2>스테이지 선택</h2>
 				</div>
 				<button class="stage-select" data-stage="1">스테이지 1 - 지각</button>
@@ -59,8 +62,12 @@
 			<!-- 설정 메뉴 -->
 			<div id="settings-menu" class="menu hidden">
 				<div class="header-row">
-					<img id="settings-back-arrow" class="back-arrow" 
-					src="assets/images/arrow_back.png" alt="뒤로가기" />
+					<img
+						id="settings-back-arrow"
+						class="back-arrow"
+						src="assets/images/arrow_back.png"
+						alt="뒤로가기"
+					/>
 					<h2>설정</h2>
 				</div>
 				<div class="setting-option">
@@ -79,16 +86,16 @@
 						<option value="120">120초</option>
 					</select>
 				</div>
-				<div class="settings-group">
+				<!-- <div class="settings-group">
 					<label for="background-select">배경 이미지:</label>
 					<select id="background-select">
 						<option value="space">우주</option>
 						<option value="blue">파란색</option>
 						<option value="gradient">그라데이션</option>
 					</select>
-					<!-- 썸네일 미리보기 이미지(선택) -->
+					썸네일 미리보기 이미지(선택) 
 					<img id="bg-preview" src="assets/images/bg_space.jpg" alt="미리보기" style="width:64px; height:40px; margin-left:12px;">
-				</div>
+				</div> -->
 				<div class="settings-group">
 					<label for="music-select">배경 음악:</label>
 					<select id="music-select">
@@ -100,16 +107,28 @@
 				<div class="settings-group">
 					<label>공:</label>
 					<label>
-						<input type="radio" name="ball" value="basic" checked> 기본
-						<img src="assets/images/ball_basic.png" alt="기본" class="ball-preview">
+						<input type="radio" name="ball" value="basic" checked /> 기본
+						<img
+							src="assets/images/ball_basic.png"
+							alt="기본"
+							class="ball-preview"
+						/>
 					</label>
 					<label>
-						<input type="radio" name="ball" value="star"> 별
-						<img src="assets/images/ball_star.png" alt="별" class="ball-preview">
+						<input type="radio" name="ball" value="star" /> 별
+						<img
+							src="assets/images/ball_star.png"
+							alt="별"
+							class="ball-preview"
+						/>
 					</label>
 					<label>
-						<input type="radio" name="ball" value="eye"> 눈알
-						<img src="assets/images/ball_eye.png" alt="눈알" class="ball-preview">
+						<input type="radio" name="ball" value="eye" /> 눈알
+						<img
+							src="assets/images/ball_eye.png"
+							alt="눈알"
+							class="ball-preview"
+						/>
 					</label>
 					<!-- 썸네일 아이콘 추가 가능 -->
 				</div>
@@ -143,6 +162,5 @@
 		<script src="./js/levels/level3.js"></script>
 		<script src="./js/levels/level4.js"></script>
 		<script src="./js/cheat.js"></script>
-
 	</body>
 </html>
